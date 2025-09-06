@@ -1,0 +1,3790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Makina - Game</title>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    
+    <!-- Hidden SVG Avatar Definitions -->
+    <div style="display: none;">
+        <!-- Avatar 1 - Cyberpunk Tech Specialist -->
+        <svg id="avatar-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow1">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad1)" filter="url(#shadow1)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#FFE4B5"/>
+            <circle cx="45" cy="35" r="2" fill="#333"/>
+            <circle cx="55" cy="35" r="2" fill="#333"/>
+            <path d="M 48 42 Q 50 44 52 42" stroke="#333" stroke-width="1.5" fill="none"/>
+            <!-- Hair -->
+            <path d="M 34 30 Q 50 20 66 30 Q 60 25 50 25 Q 40 25 34 30" fill="#4A4A4A"/>
+            <!-- Body -->
+            <rect x="42" y="54" width="16" height="25" rx="8" fill="#1F2937"/>
+            <rect x="44" y="56" width="12" height="20" rx="6" fill="#FFFFFF"/>
+            <!-- Tie -->
+            <polygon points="49,56 51,56 52,66 48,66" fill="#DC2626"/>
+        </svg>
+
+
+        <!-- Avatar 2 - Mystical Forest Guardian -->
+        <svg id="avatar-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="forest-bg" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:#1e8449;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#145a32;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="leaf-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#58d68d;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#28b463;stop-opacity:1" />
+                </linearGradient>
+                <filter id="nature-glow">
+                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Background -->
+            <circle cx="50" cy="50" r="48" fill="url(#forest-bg)"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#58d68d" stroke-width="2" opacity="0.7"/>
+            
+            <!-- Mystical aura -->
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#a9dfbf" stroke-width="1" opacity="0.4"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#a9dfbf" stroke-width="0.5" opacity="0.3"/>
+            
+            <!-- Face -->
+            <ellipse cx="50" cy="38" rx="13" ry="15" fill="#f4d03f"/>
+            
+            <!-- Forest markings -->
+            <path d="M 42 32 Q 44 30 46 32" stroke="#27ae60" stroke-width="1" fill="none"/>
+            <path d="M 54 32 Q 56 30 58 32" stroke="#27ae60" stroke-width="1" fill="none"/>
+            
+            <!-- Eyes -->
+            <circle cx="46" cy="36" r="2" fill="#1e8449"/>
+            <circle cx="54" cy="36" r="2" fill="#1e8449"/>
+            <circle cx="46" cy="36" r="1" fill="#58d68d" filter="url(#nature-glow)"/>
+            <circle cx="54" cy="36" r="1" fill="#58d68d" filter="url(#nature-glow)"/>
+            
+            <!-- Mouth -->
+            <path d="M 47 43 Q 50 45 53 43" stroke="#27ae60" stroke-width="1.5" fill="none"/>
+            
+            <!-- Leafy hair -->
+            <path d="M 37 28 Q 50 15 63 28 Q 58 20 50 20 Q 42 20 37 28" fill="#27ae60"/>
+            <ellipse cx="42" cy="25" rx="3" ry="5" fill="url(#leaf-gradient)" transform="rotate(-20 42 25)"/>
+            <ellipse cx="50" cy="22" rx="3" ry="5" fill="url(#leaf-gradient)"/>
+            <ellipse cx="58" cy="25" rx="3" ry="5" fill="url(#leaf-gradient)" transform="rotate(20 58 25)"/>
+            
+            <!-- Nature robe -->
+            <ellipse cx="50" cy="67" rx="18" ry="25" fill="#1e8449"/>
+            <ellipse cx="50" cy="67" rx="15" ry="22" fill="#27ae60"/>
+            
+            <!-- Leaf decorations -->
+            <ellipse cx="45" cy="60" rx="2" ry="4" fill="url(#leaf-gradient)" transform="rotate(-30 45 60)"/>
+            <ellipse cx="55" cy="62" rx="2" ry="4" fill="url(#leaf-gradient)" transform="rotate(30 55 62)"/>
+            <ellipse cx="50" cy="72" rx="2" ry="4" fill="url(#leaf-gradient)"/>
+            
+            <!-- Magical sparkles -->
+            <circle cx="40" cy="45" r="1" fill="#f7dc6f" filter="url(#nature-glow)"/>
+            <circle cx="60" cy="48" r="0.8" fill="#f7dc6f" filter="url(#nature-glow)"/>
+            <circle cx="35" cy="65" r="0.6" fill="#f7dc6f" filter="url(#nature-glow)"/>
+        </svg>
+
+        <!-- Avatar 3 - Fierce Dragon Warrior -->
+        <svg id="avatar-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="dragon-bg" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:#c0392b;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#922b21;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="flame-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#e67e22;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#d35400;stop-opacity:1" />
+                </linearGradient>
+                <filter id="fire-glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Background -->
+            <circle cx="50" cy="50" r="48" fill="url(#dragon-bg)"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#f39c12" stroke-width="2" opacity="0.8"/>
+            
+            <!-- Dragon scale pattern -->
+            <path d="M 30 30 Q 35 28 40 30 Q 35 32 30 30" fill="#d35400" opacity="0.3"/>
+            <path d="M 60 30 Q 65 28 70 30 Q 65 32 60 30" fill="#d35400" opacity="0.3"/>
+            <path d="M 25 50 Q 30 48 35 50 Q 30 52 25 50" fill="#d35400" opacity="0.3"/>
+            <path d="M 65 50 Q 70 48 75 50 Q 70 52 65 50" fill="#d35400" opacity="0.3"/>
+            
+            <!-- Face -->
+            <ellipse cx="50" cy="38" rx="14" ry="16" fill="#f4a460"/>
+            
+            <!-- Battle scars -->
+            <path d="M 40 32 L 43 35" stroke="#8b4513" stroke-width="1" fill="none"/>
+            <path d="M 57 30 L 60 33" stroke="#8b4513" stroke-width="1" fill="none"/>
+            
+            <!-- Fierce eyes -->
+            <ellipse cx="46" cy="35" rx="3" ry="2" fill="#d35400"/>
+            <ellipse cx="54" cy="35" rx="3" ry="2" fill="#d35400"/>
+            <circle cx="46" cy="35" r="1.5" fill="#f39c12" filter="url(#fire-glow)"/>
+            <circle cx="54" cy="35" r="1.5" fill="#f39c12" filter="url(#fire-glow)"/>
+            
+            <!-- Fierce mouth -->
+            <path d="M 45 42 Q 50 40 55 42" stroke="#8b4513" stroke-width="2" fill="none"/>
+            
+            <!-- Dragon horns -->
+            <path d="M 42 25 Q 40 18 44 20 Q 42 22 42 25" fill="#654321"/>
+            <path d="M 58 25 Q 60 18 56 20 Q 58 22 58 25" fill="#654321"/>
+            
+            <!-- Flame hair -->
+            <path d="M 36 28 Q 50 15 64 28 Q 58 20 50 20 Q 42 20 36 28" fill="url(#flame-gradient)"/>
+            <path d="M 40 20 Q 42 15 44 18" fill="#f39c12" filter="url(#fire-glow)"/>
+            <path d="M 50 18 Q 52 12 54 16" fill="#f39c12" filter="url(#fire-glow)"/>
+            <path d="M 56 18 Q 58 13 60 17" fill="#f39c12" filter="url(#fire-glow)"/>
+            
+            <!-- Dragon armor -->
+            <path d="M 35 54 Q 50 50 65 54 L 62 82 Q 50 85 38 82 Z" fill="#8b4513"/>
+            <path d="M 38 57 Q 50 54 62 57 L 60 78 Q 50 81 40 78 Z" fill="#a0522d"/>
+            
+            <!-- Armor details -->
+            <ellipse cx="50" cy="65" rx="8" ry="3" fill="#d35400" opacity="0.6"/>
+            <circle cx="45" cy="70" r="2" fill="#f39c12"/>
+            <circle cx="55" cy="70" r="2" fill="#f39c12"/>
+            
+            <!-- Fire aura -->
+            <circle cx="30" cy="60" r="1.5" fill="#f39c12" filter="url(#fire-glow)" opacity="0.7"/>
+            <circle cx="70" cy="55" r="1" fill="#f39c12" filter="url(#fire-glow)" opacity="0.7"/>
+            <circle cx="25" cy="75" r="0.8" fill="#f39c12" filter="url(#fire-glow)" opacity="0.7"/>
+        </svg>
+
+        <!-- Avatar 4 - Cosmic Mage -->
+        <svg id="avatar-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="cosmic-bg" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#663399;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#4a148c;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1a0033;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="star-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffeb3b;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#ffc107;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+                </linearGradient>
+                <filter id="cosmic-glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <filter id="star-twinkle">
+                    <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Cosmic background -->
+            <circle cx="50" cy="50" r="48" fill="url(#cosmic-bg)"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#9c27b0" stroke-width="2" opacity="0.6"/>
+            
+            <!-- Stars in background -->
+            <circle cx="25" cy="25" r="0.8" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="75" cy="30" r="0.6" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="20" cy="70" r="1" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="80" cy="75" r="0.7" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="30" cy="50" r="0.5" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="70" cy="60" r="0.5" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            
+            <!-- Face -->
+            <ellipse cx="50" cy="38" rx="13" ry="15" fill="#e1bee7"/>
+            
+            <!-- Third eye -->
+            <ellipse cx="50" cy="28" rx="3" ry="4" fill="#9c27b0" filter="url(#cosmic-glow)"/>
+            <circle cx="50" cy="28" r="2" fill="#e1bee7"/>
+            <circle cx="50" cy="28" r="1" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            
+            <!-- Eyes -->
+            <circle cx="46" cy="36" r="2.5" fill="#9c27b0"/>
+            <circle cx="54" cy="36" r="2.5" fill="#9c27b0"/>
+            <circle cx="46" cy="36" r="1.5" fill="#e1bee7"/>
+            <circle cx="54" cy="36" r="1.5" fill="#e1bee7"/>
+            <circle cx="46" cy="36" r="0.8" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="54" cy="36" r="0.8" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            
+            <!-- Mouth -->
+            <path d="M 47 43 Q 50 45 53 43" stroke="#9c27b0" stroke-width="1.5" fill="none"/>
+            
+            <!-- Cosmic hair/energy -->
+            <path d="M 37 30 Q 50 15 63 30" fill="none" stroke="url(#star-gradient)" stroke-width="3" filter="url(#cosmic-glow)"/>
+            <path d="M 35 25 Q 40 18 45 22" fill="none" stroke="#9c27b0" stroke-width="2" filter="url(#cosmic-glow)"/>
+            <path d="M 55 22 Q 60 18 65 25" fill="none" stroke="#9c27b0" stroke-width="2" filter="url(#cosmic-glow)"/>
+            
+            <!-- Mystical beard -->
+            <path d="M 42 48 Q 50 52 58 48 Q 55 50 50 51 Q 45 50 42 48" fill="#e1bee7"/>
+            <path d="M 45 49 Q 50 51 55 49" stroke="#9c27b0" stroke-width="0.5"/>
+            
+            <!-- Cosmic robe -->
+            <ellipse cx="50" cy="67" rx="20" ry="25" fill="#4a148c"/>
+            <ellipse cx="50" cy="67" rx="17" ry="22" fill="#663399"/>
+            
+            <!-- Constellation pattern on robe -->
+            <circle cx="42" cy="60" r="0.8" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="58" cy="62" r="0.6" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="47" cy="68" r="1" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="53" cy="72" r="0.7" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            <circle cx="50" cy="78" r="0.8" fill="#ffeb3b" filter="url(#star-twinkle)"/>
+            
+            <!-- Connect stars with lines -->
+            <path d="M 42 60 L 47 68 L 53 72 L 58 62" stroke="#9c27b0" stroke-width="0.5" opacity="0.6"/>
+            
+            <!-- Magical aura -->
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#9c27b0" stroke-width="1" opacity="0.3" filter="url(#cosmic-glow)"/>
+        </svg>
+
+        <!-- Avatar 5 - Phoenix Warrior -->
+        <svg id="avatar-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="phoenix-bg" cx="50%" cy="30%" r="70%">
+                    <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#e55039;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#b71540;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="phoenix-feather" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffa726;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#ff7043;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#d84315;stop-opacity:1" />
+                </linearGradient>
+                <filter id="flame-aura">
+                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <filter id="ember-glow">
+                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Background -->
+            <circle cx="50" cy="50" r="48" fill="url(#phoenix-bg)"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#ffa726" stroke-width="2" opacity="0.8"/>
+            
+            <!-- Phoenix flames background -->
+            <path d="M 20 70 Q 25 60 30 65 Q 35 55 40 60" fill="none" stroke="#ff7043" stroke-width="2" opacity="0.6" filter="url(#flame-aura)"/>
+            <path d="M 60 60 Q 65 55 70 65 Q 75 60 80 70" fill="none" stroke="#ff7043" stroke-width="2" opacity="0.6" filter="url(#flame-aura)"/>
+            
+            <!-- Face -->
+            <ellipse cx="50" cy="38" rx="14" ry="16" fill="#ffcc80"/>
+            
+            <!-- Phoenix mark on forehead -->
+            <path d="M 50 25 Q 52 22 50 20 Q 48 22 50 25" fill="#d84315"/>
+            <circle cx="50" cy="26" r="1" fill="#ffa726" filter="url(#ember-glow)"/>
+            
+            <!-- Eyes -->
+            <ellipse cx="46" cy="35" rx="2.5" ry="3" fill="#d84315"/>
+            <ellipse cx="54" cy="35" rx="2.5" ry="3" fill="#d84315"/>
+            <circle cx="46" cy="35" r="1.5" fill="#ff7043" filter="url(#ember-glow)"/>
+            <circle cx="54" cy="35" r="1.5" fill="#ff7043" filter="url(#ember-glow)"/>
+            
+            <!-- Mouth -->
+            <path d="M 47 43 Q 50 45 53 43" stroke="#d84315" stroke-width="1.5" fill="none"/>
+            
+            <!-- Phoenix feather hair -->
+            <path d="M 36 30 Q 50 12 64 30 Q 58 18 50 18 Q 42 18 36 30" fill="url(#phoenix-feather)"/>
+            
+            <!-- Feather details -->
+            <ellipse cx="40" cy="22" rx="2" ry="8" fill="#ff7043" transform="rotate(-30 40 22)" filter="url(#ember-glow)"/>
+            <ellipse cx="50" cy="18" rx="2" ry="10" fill="#ffa726" filter="url(#ember-glow)"/>
+            <ellipse cx="60" cy="22" rx="2" ry="8" fill="#ff7043" transform="rotate(30 60 22)" filter="url(#ember-glow)"/>
+            
+            <!-- Phoenix armor -->
+            <path d="M 32 54 Q 50 50 68 54 L 65 82 Q 50 88 35 82 Z" fill="#b71540"/>
+            <path d="M 36 57 Q 50 54 64 57 L 62 78 Q 50 84 38 78 Z" fill="#e55039"/>
+            
+            <!-- Armor flame patterns -->
+            <path d="M 42 62 Q 45 60 48 62 Q 45 64 42 62" fill="#ff7043" filter="url(#ember-glow)"/>
+            <path d="M 52 62 Q 55 60 58 62 Q 55 64 52 62" fill="#ff7043" filter="url(#ember-glow)"/>
+            <path d="M 47 70 Q 50 68 53 70 Q 50 72 47 70" fill="#ffa726" filter="url(#ember-glow)"/>
+            
+            <!-- Wing silhouettes -->
+            <path d="M 25 45 Q 20 50 25 55 Q 30 50 25 45" fill="#d84315" opacity="0.4"/>
+            <path d="M 75 45 Q 80 50 75 55 Q 70 50 75 45" fill="#d84315" opacity="0.4"/>
+            
+            <!-- Floating embers -->
+            <circle cx="28" cy="35" r="0.8" fill="#ffa726" filter="url(#ember-glow)"/>
+            <circle cx="72" cy="40" r="1" fill="#ff7043" filter="url(#ember-glow)"/>
+            <circle cx="30" cy="75" r="0.6" fill="#ffa726" filter="url(#ember-glow)"/>
+            <circle cx="70" cy="80" r="0.8" fill="#ff7043" filter="url(#ember-glow)"/>
+            
+            <!-- Phoenix rebirth aura -->
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#ff7043" stroke-width="1" opacity="0.3" filter="url(#flame-aura)"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#ffa726" stroke-width="0.5" opacity="0.4" filter="url(#flame-aura)"/>
+        </svg>
+
+        <!-- Avatar 6 - Ethereal Moon Priestess -->
+        <svg id="avatar-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="moon-bg" cx="50%" cy="30%" r="70%">
+                    <stop offset="0%" style="stop-color:#e8eaf6;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#c5cae9;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#7986cb;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="moonlight" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f8bbd9;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#e1bee7;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ce93d8;stop-opacity:1" />
+                </linearGradient>
+                <filter id="ethereal-glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <filter id="star-shimmer">
+                    <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                    <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Background -->
+            <circle cx="50" cy="50" r="48" fill="url(#moon-bg)"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#e1bee7" stroke-width="2" opacity="0.7"/>
+            
+            <!-- Moonlight rays -->
+            <path d="M 50 10 L 50 20" stroke="#f8bbd9" stroke-width="1" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 30 20 L 35 28" stroke="#f8bbd9" stroke-width="1" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 70 20 L 65 28" stroke="#f8bbd9" stroke-width="1" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 20 50 L 28 50" stroke="#f8bbd9" stroke-width="1" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 80 50 L 72 50" stroke="#f8bbd9" stroke-width="1" opacity="0.6" filter="url(#ethereal-glow)"/>
+            
+            <!-- Face -->
+            <ellipse cx="50" cy="38" rx="13" ry="15" fill="#fce4ec"/>
+            
+            <!-- Moon symbol on forehead -->
+            <path d="M 48 26 Q 50 22 52 26 Q 50 30 48 26" fill="none" stroke="#ce93d8" stroke-width="1.5"/>
+            <circle cx="50" cy="26" r="2" fill="none" stroke="#ce93d8" stroke-width="1"/>
+            
+            <!-- Eyes -->
+            <ellipse cx="46" cy="35" rx="2" ry="3" fill="#7986cb"/>
+            <ellipse cx="54" cy="35" rx="2" ry="3" fill="#7986cb"/>
+            <circle cx="46" cy="35" r="1.5" fill="#e1bee7" filter="url(#star-shimmer)"/>
+            <circle cx="54" cy="35" r="1.5" fill="#e1bee7" filter="url(#star-shimmer)"/>
+            
+            <!-- Serene mouth -->
+            <path d="M 47 42 Q 50 44 53 42" stroke="#ce93d8" stroke-width="1" fill="none"/>
+            
+            <!-- Flowing hair -->
+            <path d="M 37 30 Q 25 25 20 35 Q 30 30 37 35" fill="url(#moonlight)"/>
+            <path d="M 37 30 Q 50 15 63 30 Q 58 20 50 20 Q 42 20 37 30" fill="url(#moonlight)"/>
+            <path d="M 63 30 Q 75 25 80 35 Q 70 30 63 35" fill="url(#moonlight)"/>
+            
+            <!-- Hair ornaments -->
+            <circle cx="35" cy="32" r="1.5" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            <circle cx="65" cy="32" r="1.5" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            
+            <!-- Ethereal robes -->
+            <ellipse cx="50" cy="67" rx="22" ry="25" fill="#c5cae9" opacity="0.8"/>
+            <ellipse cx="50" cy="67" rx="18" ry="22" fill="#e1bee7" opacity="0.9"/>
+            <ellipse cx="50" cy="67" rx="14" ry="18" fill="#f8bbd9"/>
+            
+            <!-- Robe details -->
+            <path d="M 40 58 Q 50 55 60 58" stroke="#ce93d8" stroke-width="1" opacity="0.7"/>
+            <path d="M 42 65 Q 50 62 58 65" stroke="#ce93d8" stroke-width="1" opacity="0.7"/>
+            <path d="M 44 72 Q 50 69 56 72" stroke="#ce93d8" stroke-width="1" opacity="0.7"/>
+            
+            <!-- Celestial jewelry -->
+            <ellipse cx="50" cy="52" rx="6" ry="2" fill="none" stroke="#f8bbd9" stroke-width="1"/>
+            <circle cx="50" cy="52" r="1.5" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            
+            <!-- Floating moon phases -->
+            <circle cx="25" cy="40" r="2" fill="#f8bbd9" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 23 40 Q 25 38 27 40 Q 25 42 23 40" fill="#ce93d8" opacity="0.8"/>
+            
+            <circle cx="75" cy="65" r="1.8" fill="#f8bbd9" opacity="0.6" filter="url(#ethereal-glow)"/>
+            <path d="M 73.5 65 Q 75 63.5 76.5 65 Q 75 66.5 73.5 65" fill="#ce93d8" opacity="0.8"/>
+            
+            <!-- Starlight -->
+            <circle cx="30" cy="25" r="0.8" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            <circle cx="70" cy="30" r="0.6" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            <circle cx="25" cy="75" r="1" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            <circle cx="75" cy="80" r="0.7" fill="#f8bbd9" filter="url(#star-shimmer)"/>
+            
+            <!-- Ethereal aura -->
+            <circle cx="50" cy="50" r="43" fill="none" stroke="#e1bee7" stroke-width="1" opacity="0.3" filter="url(#ethereal-glow)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#f8bbd9" stroke-width="0.5" opacity="0.4" filter="url(#ethereal-glow)"/>
+        </svg>
+        
+        <!-- COMPONENT-BASED AVATAR SYSTEM -->
+        <!-- FACE COMPONENTS (1-6) -->
+        <svg id="face-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#FDBCB4"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#D2B48C"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 54 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#8B4513"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#FFF" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#F5DEB3"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 52 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="46" cy="44" r="0.5" fill="#D2691E"/>
+            <circle cx="54" cy="44" r="0.5" fill="#D2691E"/>
+        </svg>
+
+        <svg id="face-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#C19A6B"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#FFDBAC"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <!-- HAT COMPONENTS (1-6) -->
+        <svg id="hat-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="30" rx="20" ry="10" fill="#FF4444"/>
+            <rect x="30" y="25" width="40" height="8" rx="4" fill="#FF6666"/>
+            <ellipse cx="62" cy="30" rx="6" ry="2" fill="#FF6666"/>
+        </svg>
+
+        <svg id="hat-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 32 Q 30 22 50 22 Q 70 22 70 32 Q 68 26 50 26 Q 32 26 30 32" fill="#4A90E2"/>
+            <circle cx="50" cy="20" r="2" fill="#4A90E2"/>
+        </svg>
+
+        <svg id="hat-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="44" y="15" width="12" height="18" fill="#333"/>
+            <ellipse cx="50" cy="33" rx="18" ry="3" fill="#333"/>
+            <ellipse cx="50" cy="15" rx="6" ry="1.5" fill="#333"/>
+        </svg>
+
+        <svg id="hat-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 12 L 37 32 L 63 32 Z" fill="#7B68EE"/>
+            <ellipse cx="50" cy="32" rx="13" ry="2" fill="#7B68EE"/>
+            <circle cx="50" cy="14" r="1.5" fill="#FFD700"/>
+            <text x="46" y="24" fill="#FFD700" font-size="6">★</text>
+        </svg>
+
+        <svg id="hat-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 32 28 L 36 20 L 42 24 L 50 16 L 58 24 L 64 20 L 68 28 L 66 32 L 34 32 Z" fill="#FFD700"/>
+            <circle cx="42" cy="22" r="1" fill="#FF4444"/>
+            <circle cx="50" cy="18" r="1.5" fill="#FF4444"/>
+            <circle cx="58" cy="22" r="1" fill="#FF4444"/>
+        </svg>
+
+        <svg id="hat-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="30" rx="16" ry="6" fill="#8B4513"/>
+            <ellipse cx="50" cy="32" rx="22" ry="4" fill="#8B4513"/>
+            <path d="M 28 32 Q 24 30 28 28 Q 32 30 28 32" fill="#8B4513"/>
+            <path d="M 72 32 Q 76 30 72 28 Q 68 30 72 32" fill="#8B4513"/>
+        </svg>
+
+        <!-- ACCESSORY COMPONENTS (1-6) -->
+        <svg id="accessory-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="43" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <circle cx="57" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <line x1="48" y1="42" x2="52" y2="42" stroke="#333" stroke-width="1.5"/>
+        </svg>
+
+        <svg id="accessory-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 43 48 Q 46 47 50 48 Q 54 47 57 48 Q 54 50 50 48 Q 46 50 43 48" fill="#8B4513"/>
+        </svg>
+
+        <svg id="accessory-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="69" cy="45" r="1.5" fill="#FFD700"/>
+            <circle cx="69" cy="48" r="0.8" fill="#FFD700"/>
+        </svg>
+
+        <svg id="accessory-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 38 38 L 42 46" stroke="#8B0000" stroke-width="1.2" fill="none"/>
+            <path d="M 39 40 L 41 44" stroke="#8B0000" stroke-width="0.8" fill="none"/>
+        </svg>
+
+        <svg id="accessory-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="43" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <line x1="38" y1="42" x2="33" y2="44" stroke="#333" stroke-width="1"/>
+        </svg>
+
+        <svg id="accessory-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="55" cy="48" r="0.8" fill="#333"/>
+        </svg>
+    </div>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .main-game {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .player-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .player-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .player-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .hand-section {
+            flex: 1;
+            margin: 20px 0;
+        }
+        
+        .hand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .hand {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            min-height: 150px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #ffd700;
+        }
+        
+        .card.clickable-card {
+            cursor: pointer;
+        }
+        
+        .card.selected {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #333;
+            border-color: #ff8f00;
+            transform: translateY(-5px);
+        }
+        
+        .card-role {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .card-role.Businessman { color: #4CAF50; }
+        .card-role.Politician { color: #9C27B0; }
+        .card-role.Terrorist { color: #f44336; }
+        .card-role.Thief { color: #FF9800; }
+        .card-role.Police { color: #3F51B5; }
+        .card-role.Colonel { color: #607D8B; }
+        .card-role.Fisc { color: #795548; }
+        
+        .actions-section {
+            margin-top: 20px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .basic-action {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .role-action {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+        
+        .special-action {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+        
+        .challenge-action {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+        
+        .other-players {
+            max-height: 100%;
+            overflow-y: auto;
+        }
+        
+        .other-player {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .other-player.current-turn {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+        }
+        
+        .other-player.eliminated {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+        
+        .other-player-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .turn-indicator {
+            background: #ffd700;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .other-player-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        /* Avatar Styles */
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .player-name-text {
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .current-player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .current-player-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .game-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .game-status {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .status-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .game-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .game-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .game-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .log-section {
+            flex: 1;
+            margin-top: 20px;
+        }
+        
+        .game-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border-left: 3px solid;
+        }
+        
+        .log-entry.info { 
+            background: rgba(0, 123, 255, 0.1); 
+            border-color: #007bff; 
+        }
+        
+        .log-entry.action { 
+            background: rgba(40, 167, 69, 0.1); 
+            border-color: #28a745; 
+        }
+        
+        .log-entry.challenge { 
+            background: rgba(220, 53, 69, 0.1); 
+            border-color: #dc3545; 
+        }
+        
+        .log-entry.error { 
+            background: rgba(220, 53, 69, 0.2); 
+            border-color: #dc3545; 
+        }
+        
+        .connecting {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .connecting-content {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .waiting-message {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+
+        /* Special Game Panels - Based on display-enhanced.html */
+        .special-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 2000;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-header h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .selection-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .selectable-card, .selectable-role {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selectable-card:hover, .selectable-role:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateY(-2px);
+        }
+
+        .selectable-card.selected, .selectable-role.selected {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .panel-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .panel-btn.primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .panel-btn.primary:hover {
+            background: #0056b3;
+        }
+
+        .panel-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .panel-btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .panel-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .countdown-timer {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #856404;
+            font-size: 18px;
+        }
+
+        .opportunity-panel {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            animation: pulse 2s infinite;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+
+        .challenge-panel {
+            background: #f8d7da;
+            border: 3px solid #dc3545;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            animation: shake 0.8s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .selection-info {
+            background: rgba(156, 39, 176, 0.1);
+            border: 2px solid #9C27B0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .selectable-card-small {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 12px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hand-updating {
+            opacity: 0.7;
+            animation: pulse 1s infinite;
+        }
+
+        .hand-updated {
+            animation: flashGreen 0.5s ease-in-out;
+        }
+
+        @keyframes flashGreen {
+            0% { background-color: rgba(76, 175, 80, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        @media (max-width: 1200px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .sidebar {
+                order: -1;
+            }
+            
+            .hand {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .special-panel {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            /* Player choosing card notification animations */
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(300px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes slideOutRight {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(300px);
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connecting Screen -->
+    <div id="connectingScreen" class="connecting">
+        <div class="connecting-content">
+            <h2>Connecting to Game...</h2>
+            <div class="spinner"></div>
+            <p>Please wait while we connect you to the game.</p>
+        </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div id="gameContainer" class="game-container hidden">
+        <!-- Left Sidebar: Other Players -->
+        <div class="sidebar">
+            <h3>🎮 Other Players</h3>
+            <div id="otherPlayers" class="other-players">
+                <!-- Other players will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Main Game Area -->
+        <div class="main-game">
+            <!-- Player Header -->
+            <div class="player-header">
+                <div class="current-player-header">
+                    <img id="currentPlayerAvatar" class="current-player-avatar" src="" alt="Your Avatar" />
+                    <div class="player-name" id="playerName">Player Name</div>
+                </div>
+                <div class="player-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="playerCoins">0</span>
+                        <div class="stat-label">Coins</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="playerCards">0</span>
+                        <div class="stat-label">Cards</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="turnStatus">Not Your Turn</span>
+                        <div class="stat-label">Status</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Your Hand -->
+            <div class="hand-section">
+                <div class="hand-header">
+                    <h3>🎴 Your Hand</h3>
+                    <small>Click cards when required to lose them</small>
+                </div>
+                <div class="hand" id="playerHand">
+                    <!-- Player's cards will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="actions-section">
+                <h3>⚡ Actions</h3>
+                <div class="actions-grid" id="actionsGrid">
+                    <!-- Action buttons will be populated here -->
+                </div>
+                
+                <!-- Target Selection -->
+                <div id="targetSelection" class="opportunity-panel hidden">
+                    <h4>Select Target Player</h4>
+                    <div class="selection-area" id="targetGrid">
+                        <!-- Target buttons will be populated here -->
+                    </div>
+                    <button class="panel-btn secondary" onclick="cancelTargetSelection()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar: Game Info & Log -->
+        <div class="sidebar">
+            <!-- Game Info -->
+            <div class="game-info">
+                <h3>📊 Game Status</h3>
+                <div class="game-status">
+                    <div class="status-item">
+                        <div class="status-value" id="gameState">in_progress</div>
+                        <div class="status-label">State</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="bankCoins">50</div>
+                        <div class="status-label">Bank</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="deckSize">15</div>
+                        <div class="status-label">Deck</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="currentPlayerName">-</div>
+                        <div class="status-label">Current Turn</div>
+                    </div>
+                </div>
+                <div class="game-actions">
+                    <button class="game-btn" onclick="refreshGameState()">🔄 Refresh</button>
+                    <button class="game-btn" onclick="showGameHelp()">❓ Help</button>
+                    <button class="game-btn" onclick="leaveGame()">🚪 Leave Game</button>
+                </div>
+            </div>
+            
+            <!-- Game Log -->
+            <div class="log-section">
+                <h3>📝 Game Log</h3>
+                <div class="game-log" id="gameLog">
+                    <div class="log-entry info">Game started! Good luck!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Game Panels -->
+    
+    <!-- Politician Card Selection Panel -->
+    <div id="politicianPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>🏛️ Politician Card Selection</h3>
+            <p>You drew new cards. Select <span id="mustSelectCount">2</span> cards to keep.</p>
+        </div>
+        
+        <div class="selection-info">
+            <strong>Selection Progress:</strong> <span id="selectedCount">0</span> / <span id="totalToSelect">2</span> cards selected
+        </div>
+        
+        <div>
+            <h4>Original Hand:</h4>
+            <div class="card-grid" id="originalCards"></div>
+        </div>
+        
+        <div>
+            <h4>Drawn Cards:</h4>
+            <div class="card-grid" id="drawnCards"></div>
+        </div>
+        
+        <div class="panel-actions">
+            <button id="confirmSelection" class="panel-btn primary" onclick="confirmPoliticianSelection()" disabled>
+                Confirm Selection
+            </button>
+        </div>
+    </div>
+
+    <!-- Police Card Selection Panel -->
+    <div id="policeCardSelectionPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>👮 Police Inspection</h3>
+            <p><span id="policeOfficerName">Police Officer</span> wants to inspect your hand. Choose a card to show:</p>
+        </div>
+        
+        <div class="card-grid" id="policeCardGrid"></div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn secondary" onclick="cancelPoliceSelection()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Police Decision Panel -->
+    <div id="policeDecisionPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>👮 Police Decision</h3>
+            <p>You inspected <span id="inspectedPlayerName">Player</span> and saw: <strong id="inspectedCard">Card</strong></p>
+            <p>What do you want to do?</p>
+        </div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn primary" onclick="policeDecision('keep')">
+                ✅ Keep Card (Target keeps the card)
+            </button>
+            <button class="panel-btn secondary" onclick="policeDecision('replace')">
+                🔄 Replace Card (Target draws new card)
+            </button>
+        </div>
+    </div>
+
+    <!-- Terrorist Card Selection Panel -->
+    <div id="terroristCardSelectionPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>💣 Terrorist Attack</h3>
+            <p><span id="terroristName">Terrorist</span> is attacking you! Choose a card to lose:</p>
+        </div>
+        
+        <div class="card-grid" id="terroristCardGrid"></div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn secondary" onclick="cancelTerroristSelection()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Colonel Role Guess Panel -->
+    <div id="colonelRoleGuessPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>⭐ Colonel Role Guess</h3>
+            <p>Guess the role of <span id="colonelTargetName">Player</span>:</p>
+        </div>
+        
+        <div class="selection-area" id="roleGuessGrid"></div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn secondary" onclick="cancelColonelGuess()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Card Loss Selection Panel -->
+    <div id="cardLossSelectionPanel" class="special-panel hidden">
+        <div class="panel-header">
+            <h3>🎴 Choose Card to Lose</h3>
+            <p>You must choose a card to lose due to a challenge result:</p>
+        </div>
+        
+        <div class="card-grid" id="cardLossGrid"></div>
+        
+        <div class="countdown-timer" id="cardLossTimer">Time remaining: 30s</div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn secondary" onclick="cancelCardLossSelection()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Challenge Opportunity Panel -->
+    <div id="challengeOpportunityPanel" class="challenge-panel hidden">
+        <div class="panel-header">
+            <h3>🚨 Challenge Opportunity!</h3>
+            <p id="challengeDescription">A player is claiming a role...</p>
+        </div>
+        
+        <div class="countdown-timer" id="challengeTimer">Time remaining: 10s</div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn challenge-action" onclick="submitChallenge()">
+                ⚔️ Challenge!
+            </button>
+            <button class="panel-btn secondary" onclick="passChallenge()">
+                ✋ Pass
+            </button>
+        </div>
+    </div>
+
+    <!-- Counter Opportunity Panels -->
+    <div id="counterOpportunityPanel" class="opportunity-panel hidden">
+        <div class="panel-header">
+            <h3 id="counterTitle">Counter Opportunity</h3>
+            <p id="counterDescription">You can counter-claim this action...</p>
+        </div>
+        
+        <div class="countdown-timer" id="counterTimer">Time remaining: 30s</div>
+        
+        <div class="panel-actions">
+            <button id="counterClaimBtn" class="panel-btn role-action" onclick="submitCounterClaim()">
+                Counter-Claim!
+            </button>
+            <button class="panel-btn secondary" onclick="passCounterOpportunity()">
+                ✋ Pass
+            </button>
+        </div>
+    </div>
+
+    <!-- Fisc Claim Opportunity Panel -->
+    <div id="fiscClaimPanel" class="opportunity-panel hidden">
+        <div class="panel-header">
+            <h3>💰 Fisc Claim Opportunity</h3>
+            <p><span id="businessmanName">Businessman</span> is claiming <span id="coinsAmount">4</span> coins. You can claim tax as Fisc!</p>
+        </div>
+        
+        <div class="countdown-timer" id="fiscClaimTimer">Time remaining: 15s</div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn role-action" onclick="submitFiscClaim()">
+                💰 Claim Tax as Fisc!
+            </button>
+            <button class="panel-btn secondary" onclick="passFiscClaim()">
+                ✋ Pass
+            </button>
+        </div>
+    </div>
+
+    <!-- Fisc Block Opportunity Panel -->
+    <div id="fiscBlockPanel" class="opportunity-panel hidden">
+        <div class="panel-header">
+            <h3>🚫 Fisc Block Opportunity</h3>
+            <p><span id="blockTargetName">Player</span> is attempting <span id="blockActionType">action</span>. You can block as Fisc!</p>
+        </div>
+        
+        <div class="countdown-timer" id="fiscBlockTimer">Time remaining: 10s</div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn role-action" onclick="submitFiscBlock()">
+                🚫 Block as Fisc!
+            </button>
+            <button class="panel-btn secondary" onclick="passFiscBlock()">
+                ✋ Pass
+            </button>
+        </div>
+    </div>
+
+    <!-- Corruption Opportunity Panel -->
+    <div id="corruptionModal" class="opportunity-panel hidden">
+        <div class="panel-header">
+            <h3>💰 Corruption Opportunity</h3>
+            <p id="corruptionDescription">You are being exposed! You can pay 8 coins for corruption to block this.</p>
+        </div>
+        
+        <div class="countdown-timer" id="corruptionTimer">Time remaining: 15s</div>
+        
+        <div class="panel-actions">
+            <button class="panel-btn role-action" onclick="submitCorruption()">
+                💰 Pay 8 Coins (Corruption)
+            </button>
+            <button class="panel-btn secondary" onclick="passCorruption()">
+                ✋ Pass (Lose Card)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Game State - Based on display-enhanced.html
+        let gameId = null;
+        let playerId = null;
+        let playerName = null;
+        let gameData = null;
+        let currentPlayer = null;
+        let socket = null;
+        let selectedTarget = null;
+        let pendingAction = null;
+        let challengeTimeout = null;
+        let counterTimeout = null;
+        let fiscTimeout = null;
+
+        // Avatar utility function
+        function getAvatarUrl(index) {
+            const svgElement = document.getElementById(`avatar-${index}`);
+            if (!svgElement) {
+                console.warn(`Avatar SVG not found for index: ${index}`);
+                return getAvatarUrl(1); // fallback to avatar 1
+            }
+            
+            // Clone the SVG element to avoid modifying the original
+            const clonedSvg = svgElement.cloneNode(true);
+            clonedSvg.removeAttribute('id');
+            
+            // Convert SVG to data URL
+            const svgString = new XMLSerializer().serializeToString(clonedSvg);
+            const encodedSvg = encodeURIComponent(svgString);
+            return `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+        }
+
+        function getAvatarUrlFromIndices(avatarIndices) {
+            // Generate a composite avatar from face, hat, and accessory indices
+            if (!avatarIndices || avatarIndices.length !== 3) {
+                return getAvatarUrl(1); // Fallback to default
+            }
+
+            // Create a new SVG element for the composite avatar
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 100 100");
+            svg.setAttribute("width", "40");
+            svg.setAttribute("height", "40");
+            
+            // Get face component (first index)
+            const faceElement = document.getElementById(`face-${avatarIndices[0]}`);
+            if (faceElement) {
+                const faceContent = faceElement.cloneNode(true);
+                const faceChildren = faceContent.children || [faceContent];
+                for (let child of faceChildren) {
+                    if (child.tagName !== 'svg') {
+                        svg.appendChild(child.cloneNode(true));
+                    }
+                }
+            }
+            
+            // Get hat component (second index)
+            const hatElement = document.getElementById(`hat-${avatarIndices[1]}`);
+            if (hatElement) {
+                const hatContent = hatElement.cloneNode(true);
+                const hatChildren = hatContent.children || [hatContent];
+                for (let child of hatChildren) {
+                    if (child.tagName !== 'svg') {
+                        svg.appendChild(child.cloneNode(true));
+                    }
+                }
+            }
+            
+            // Get accessory component (third index)
+            const accessoryElement = document.getElementById(`accessory-${avatarIndices[2]}`);
+            if (accessoryElement) {
+                const accessoryContent = accessoryElement.cloneNode(true);
+                const accessoryChildren = accessoryContent.children || [accessoryContent];
+                for (let child of accessoryChildren) {
+                    if (child.tagName !== 'svg') {
+                        svg.appendChild(child.cloneNode(true));
+                    }
+                }
+            }
+            
+            // Convert SVG to data URL
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svg);
+            return 'data:image/svg+xml;base64,' + btoa(svgString);
+        }
+
+        function renderPlayerDisplay() {
+            if (!gameState) {
+                document.getElementById('playersContainer').innerHTML = '<p>No game active.</p>';
+                return;
+            }
+
+            const container = document.getElementById('playersContainer');
+            container.innerHTML = '';
+
+            gameState.players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-info';
+
+                const avatarImg = document.createElement('img');
+                avatarImg.src = getAvatarUrlFromIndices(player.avatarIndices || [1, 1, 1]);
+                avatarImg.alt = `${player.name}'s avatar`;
+                avatarImg.style.width = '40px';
+                avatarImg.style.height = '40px';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = player.name;
+
+                playerDiv.appendChild(avatarImg);
+                playerDiv.appendChild(nameSpan);
+                container.appendChild(playerDiv);
+            });
+        }
+
+        function getBackgroundColor(faceIndex) {
+            const colors = [
+                '#4A90E2', // Blue
+                '#50C878', // Green  
+                '#FF6B6B', // Red
+                '#9B59B6', // Purple
+                '#F39C12', // Orange
+                '#E91E63'  // Pink
+            ];
+            return colors[(faceIndex - 1) % colors.length];
+        }
+        let corruptionTimeout = null;
+        let challengeResponseSent = false; // Flag to prevent multiple challenge responses
+
+        // API Configuration
+
+        // Backend URL configuration - Railway deployment
+        const API_BASE = 'https://el-makina-backend-production.up.railway.app/api';
+        const WEBSOCKET_URL = 'https://el-makina-backend-production.up.railway.app';
+        
+        console.log('🔗 Backend Configuration:', {
+            api: API_BASE,
+            websocket: WEBSOCKET_URL
+        });
+
+
+        // Special game state trackers
+        let politicianSelection = {
+            originalHand: [],
+            drawnCards: [],
+            mustSelect: 0,
+            selectedCards: []
+        };
+
+        let activeCounters = {
+            thief: null,
+            police: null,
+            colonel: null
+        };
+
+        // Initialize game from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            gameId = urlParams.get('gameId');
+            playerId = urlParams.get('playerId');
+            playerName = urlParams.get('playerName');
+
+            if (!gameId || !playerId || !playerName) {
+                alert('Missing game parameters. Please join through the lobby system.');
+                window.location.href = 'lobby-test.html';
+                return;
+            }
+
+            initializeGame();
+        });
+
+        async function initializeGame() {
+            try {
+                // Connect to WebSocket first
+                setupWebSocket();
+                
+                // Load initial game state
+                await refreshGameState();
+                
+                // Show game container
+                document.getElementById('connectingScreen').classList.add('hidden');
+                document.getElementById('gameContainer').classList.remove('hidden');
+                
+                logMessage('Connected to game successfully!', 'info');
+                
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                alert('Failed to connect to game. Please try again.');
+                window.location.href = 'lobby-test.html';
+            }
+        }
+
+        function setupWebSocket() {
+            socket = io(WEBSOCKET_URL);
+            
+            // Add debug logging for all events
+            socket.onAny((eventName, ...args) => {
+                console.log('WebSocket Event:', eventName, args);
+            });
+            
+            socket.on('connect', () => {
+                console.log('Connected to game server');
+                // Join the game room
+                socket.emit('join-game', {
+                    gameId: gameId,
+                    playerId: playerId
+                });
+                logMessage('Connected to game server', 'info');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from game server');
+                logMessage('Disconnected from server', 'error');
+            });
+
+            socket.on('connect_error', (error) => {
+                console.log('Connection error:', error);
+                logMessage('Connection error', 'error');
+            });
+
+            socket.on('player-joined', (data) => {
+                logMessage(`${data.playerName} joined the game`, 'info');
+                console.log('📥 RECEIVED: player-joined', data);
+            });
+
+            socket.on('player-left', (data) => {
+                logMessage(`${data.playerName} left the game`, 'info');
+                console.log('📥 RECEIVED: player-left', data);
+            });
+
+            // Core game events - Replicated from display-enhanced.html
+            socket.on('player-action', (data) => {
+                console.log('🎮 Received player-action event:', data);
+                logMessage(data.message || `🎮 ${data.player} used ${data.action}`, 'action');
+                if (data.gameState) {
+                    console.log('Updating game state from player-action event');
+                    updateGameState(data.gameState);
+                }
+                refreshGameState(); // Always refresh to get latest state
+            });
+
+            socket.on('challenge-opportunity', (data) => {
+                logMessage(data.message, 'challenge');
+                
+                // Only show challenge opportunity to other players, not the one who initiated the action
+                if (data.player !== playerName) {
+                    showChallengeOpportunity(data);
+                } else {
+                    console.log('🚫 Not showing challenge opportunity to action initiator:', data.player);
+                }
+            });
+
+            socket.on('challenge-result', (data) => {
+                const resultMsg = `⚔️ ${data.challenger} challenged ${data.challenged} - ${data.challengeSuccessful ? 'SUCCESS' : 'FAILED'}`;
+                logMessage(resultMsg, 'challenge');
+                console.log('📥 RECEIVED: challenge-result', data);
+                refreshGameState();
+                updatePlayerHand();
+                hideChallengeOpportunity();
+            });
+
+            socket.on('challenge-response-update', (data) => {
+                logMessage(`📊 Challenge response: ${data.player} ${data.response}, waiting for ${data.waitingFor} more`, 'info');
+                console.log('📥 RECEIVED: challenge-response-update', data);
+            });
+
+            socket.on('challenge-response', (data) => {
+                logMessage(`Challenge response: ${JSON.stringify(data)}`, 'challenge');
+                console.log('📥 RECEIVED: challenge-response', data);
+                refreshGameState();
+            });
+
+            socket.on('game-state-updated', (gameState) => {
+                console.log('🎮 Game state updated');
+                console.log('📥 RECEIVED: game-state-updated');
+                refreshGameState();
+            });
+
+            socket.on('challenge-error', (error) => {
+                logMessage(`Challenge error: ${error.message}`, 'error');
+                console.log('📥 RECEIVED: challenge-error', error);
+            });
+
+            socket.on('action-resolved', (data) => {
+                logMessage(`Action resolved: ${data.message}`, 'action');
+                hideChallengeOpportunity(); // Clear any pending challenge opportunities
+                refreshGameState();
+            });
+
+            // Politician events
+            socket.on('politician-card-selection', (data) => {
+                console.log('🏛️ Received politician-card-selection event:', data);
+                logMessage(`🏛️ ${data.playerName} must select cards for politician action`, 'info');
+                if (data.playerId === playerId) {
+                    console.log('This player must select cards, showing selection...');
+                    showPoliticianCardSelection(data.originalHand, data.drawnCards, data.mustSelect);
+                } else {
+                    console.log('Other player must select cards, just logging');
+                }
+                // Don't refresh game state immediately - let the politician selection complete first
+            });
+
+            // Police events
+            socket.on('police-card-selection', (data) => {
+                logMessage(`👮 ${data.policeName} wants to inspect ${data.targetPlayerName} - target must choose card`, 'info');
+                if (data.targetPlayerId === playerId) {
+                    showPoliceCardSelection(data.targetHand, data.policeName);
+                }
+                refreshGameState();
+            });
+
+            socket.on('police-card-inspection', (data) => {
+                logMessage(`👮 ${data.policeName} inspects ${data.targetPlayerName} - shown card: ${data.shownCard}`, 'info');
+                if (data.policePlayerId === playerId) {
+                    showPoliceInspectionDecision(data.targetPlayerName, data.shownCard);
+                }
+                refreshGameState();
+            });
+
+            // Terrorist events
+            socket.on('terrorist-card-selection', (data) => {
+                logMessage(`💣 ${data.terroristName} attacks ${data.targetPlayerName} - target must choose card to lose`, 'info');
+                if (data.targetPlayerId === playerId) {
+                    showTerroristCardSelection(data.targetHand, data.terroristName);
+                }
+                refreshGameState();
+            });
+
+            // Colonel events
+            socket.on('colonel-role-guess', (data) => {
+                logMessage(`⭐ ${data.colonelName} targets ${data.targetPlayerName} - Colonel must guess a role`, 'info');
+                if (data.colonelPlayerId === playerId) {
+                    showColonelRoleGuess(data.targetPlayerName);
+                }
+                refreshGameState();
+            });
+
+            socket.on('colonel-result', (data) => {
+                logMessage(`⭐ Colonel Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            // Counter-claim events
+            socket.on('thief-counter-opportunity', (data) => {
+                logMessage(`🏴‍☠️ Thief Counter Opportunity: ${data.thiefPlayerName || data.thiefName} wants to steal from ${data.targetPlayerName}`, 'info');
+                if (data.targetPlayerId === playerId) {
+                    showCounterOpportunity('thief', data.thiefPlayerName || data.thiefName, data.timeoutSeconds || 30);
+                }
+                refreshGameState();
+            });
+
+            socket.on('police-counter-opportunity', (data) => {
+                logMessage(`👮 Police Counter Opportunity: ${data.policePlayerName} wants to inspect ${data.targetPlayerName}`, 'info');
+                if (data.targetPlayerId === playerId) {
+                    showCounterOpportunity('police', data.policePlayerName, data.timeoutSeconds || 30);
+                }
+                refreshGameState();
+            });
+
+            socket.on('colonel-counter-opportunity', (data) => {
+                logMessage(`🎖️ Colonel Counter Opportunity: ${data.terroristName || data.terroristPlayerName} attacks ${data.targetPlayerName}`, 'info');
+                if (data.targetPlayerId === playerId) {
+                    showCounterOpportunity('colonel', data.terroristName || data.terroristPlayerName, data.timeLimit || 10);
+                }
+                refreshGameState();
+            });
+
+            // Counter challenge events
+            socket.on('thief-counter-challenge', (data) => {
+                console.log('🏴‍☠️ Thief counter challenge:', data);
+                logMessage(`🏴‍☠️ ${data.challengerPlayerName} challenges ${data.targetPlayerName}'s thief counter claim`, 'info');
+                
+                // Show challenge response options for all players except the counter-claimer
+                if (playerId !== data.targetPlayerId) {
+                    showChallengeOpportunity({
+                        player: data.targetPlayerName,
+                        claimedRole: 'Thief',  // English name for Thief
+                        actionType: 'thief-counter',
+                        timeout: data.timeLimit || 10
+                    });
+                }
+                refreshGameState();
+            });
+
+            socket.on('thief-counter-result', (data) => {
+                logMessage(`🏴‍☠️ Thief Counter Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('police-counter-challenge', (data) => {
+                console.log('👮 Police counter challenge:', data);
+                logMessage(`👮 ${data.challengerPlayerName} challenges ${data.targetPlayerName}'s police counter claim`, 'info');
+                
+                // Show challenge response options for all players except the counter-claimer
+                if (playerId !== data.targetPlayerId) {
+                    showChallengeOpportunity({
+                        player: data.targetPlayerName,
+                        claimedRole: 'Police',  // English name for Police
+                        actionType: 'police-counter',
+                        timeout: data.timeLimit || 10
+                    });
+                }
+                refreshGameState();
+            });
+
+            socket.on('colonel-counter-challenge', (data) => {
+                console.log('🎖️ Colonel counter challenge:', data);
+                logMessage(`🎖️ ${data.challengerPlayerName} challenges ${data.targetPlayerName}'s colonel counter claim`, 'info');
+                
+                // Show challenge response options for all players except the counter-claimer
+                if (playerId !== data.targetPlayerId) {
+                    showChallengeOpportunity({
+                        player: data.counterClaimerPlayerName,
+                        claimedRole: 'Colonel',  // Colonel is same in both languages
+                        actionType: 'colonel-counter',
+                        message: `${data.counterClaimerPlayerName} claims Colonel to block ${data.terroristPlayerName}'s terrorist attack! Do you want to challenge this claim?`,
+                        timeout: data.timeLimit || 10
+                    });
+                }
+                refreshGameState();
+            });
+
+            // Fisc events
+            socket.on('fisc-claim-opportunity', (data) => {
+                logMessage(`💰 Fisc Claim Opportunity: ${data.businessmanPlayerName} claims businessman income`, 'info');
+                if (playerId !== data.businessmanPlayerId) {
+                    showFiscClaimOpportunity(data.businessmanPlayerName, data.totalCoins, data.timeLimit || 15);
+                }
+                refreshGameState();
+            });
+
+            socket.on('fisc-block-opportunity', (data) => {
+                logMessage(`🚫 Fisc Block Opportunity: ${data.targetPlayerName} attempts ${data.actionType} - Fisc can block!`, 'info');
+                if (playerId !== data.targetPlayerId) {
+                    showFiscBlockOpportunity(data.targetPlayerName, data.actionType, data.timeLimit || 10);
+                }
+                refreshGameState();
+            });
+
+            // Result events
+            socket.on('thief-steal-result', (data) => {
+                logMessage(`🏴‍☠️ Thief Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('police-counter-result', (data) => {
+                logMessage(`🎯 Police Counter Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('colonel-counter-result', (data) => {
+                logMessage(`🎯 Colonel Counter Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('thief-counter-pass-result', (data) => {
+                logMessage(`🏃 Thief Counter Pass: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('police-counter-pass-result', (data) => {
+                logMessage(`👮 Police Counter Pass: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('colonel-counter-pass-result', (data) => {
+                logMessage(`🎖️ Colonel Counter Pass: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-claim-result', (data) => {
+                logMessage(`🎯 Fisc Claim Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-claim-submitted', (data) => {
+                logMessage(`💰 Fisc Claim Submitted: ${data.fiscPlayerName} claims tax on ${data.businessmanPlayerName}'s income`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-claim-challenge', (data) => {
+                logMessage(`⚔️ Fisc Claim Challenge: Challenge ${data.fiscPlayerName}'s claim against ${data.businessmanPlayerName} (${data.claimIndex}/${data.totalClaims})`, 'info');
+                
+                // Show challenge response options for all players except the claimer
+                if (playerId !== data.fiscPlayerId) {
+                    showChallengeOpportunity({
+                        message: `${data.fiscPlayerName} claims to have Fisc and wants to tax ${data.businessmanPlayerName}'s business income. Do you challenge this claim?`,
+                        timeLimit: data.timeLimit || 15,
+                        challengeType: 'fisc-claim'
+                    });
+                }
+                
+                refreshGameState();
+            });
+
+            socket.on('fisc-phase-complete', (data) => {
+                logMessage(`🏁 Fisc Phase Complete: ${data.businessmanPlayerName} gets ${data.remainingCoins} remaining coins`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-block-response', (data) => {
+                if (data.action === 'pass') {
+                    logMessage(`🚫 Fisc Block: ${data.playerId} passed on blocking opportunity`, 'info');
+                } else if (data.action === 'block') {
+                    logMessage(`🚫 Fisc Block: Action was blocked by Fisc!`, 'info');
+                }
+                refreshGameState();
+            });
+
+            socket.on('fisc-block-complete', (data) => {
+                logMessage(`🎯 Fisc Block Complete: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            // Card Loss Selection Event
+            socket.on('card-loss-selection', (data) => {
+                console.log('🎴 Received card-loss-selection event:', data);
+                logMessage(`🎴 ${data.playerName} must choose a card to lose`, 'info');
+                if (data.playerId === playerId) {
+                    console.log('This player must select a card to lose, showing selection...');
+                    showCardLossSelection(data.availableCards, data.selectionId, data.timeoutMs, data.deadlineTime, data.serverTime);
+                } else {
+                    console.log('Other player must select a card to lose, just logging');
+                }
+            });
+
+            socket.on('card-loss-result', (data) => {
+                const selectionMethod = data.selectedByPlayer ? 'selected' : 'auto-selected';
+                logMessage(`🎴 ${data.playerName} ${selectionMethod} ${data.lostCard} and loses it`, 'info');
+                // Close the selection panel if it's open for this player
+                if (data.playerId === playerId) {
+                    closeCardLossSelection();
+                }
+                refreshGameState();
+            });
+
+            socket.on('card-loss-timeout', (data) => {
+                logMessage(`⏰ ${data.playerName} timed out - auto-selected ${data.lostCard}`, 'warning');
+                // Close the selection panel if it's open for this player
+                if (data.playerId === playerId) {
+                    closeCardLossSelection();
+                }
+                refreshGameState();
+            });
+
+            socket.on('card-loss-error', (error) => {
+                console.error('Card loss selection error:', error);
+                logMessage(`❌ Card loss error: ${error.message}`, 'error');
+                closeCardLossSelection();
+            });
+
+            // New notification events for card selection awareness
+            socket.on('player-choosing-card', (data) => {
+                console.log('🎯 Player choosing card:', data);
+                if (data.playerId !== playerId) {
+                    // Show other players that someone is choosing a card
+                    showPlayerChoosingCardNotification(data);
+                    logMessage(`⏳ ${data.playerName} is choosing a card to lose...`, 'info');
+                }
+            });
+
+            socket.on('player-card-selection-complete', (data) => {
+                console.log('✅ Card selection complete:', data);
+                if (data.playerId !== playerId) {
+                    // Hide the waiting notification for other players
+                    hidePlayerChoosingCardNotification(data.playerId);
+                    logMessage(`✅ ${data.message}`, 'success');
+                }
+            });
+
+            socket.on('fisc-block-attempt', (data) => {
+                logMessage(`🛡️ Fisc Block Attempt: ${data.fiscPlayerName} attempts to block ${data.targetPlayerName}'s ${data.actionType}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-block-challenge', (data) => {
+                logMessage(`⚔️ Fisc Block Challenge: Challenge ${data.fiscPlayerName}'s block of ${data.targetPlayerName}'s ${data.actionType} (${data.blockIndex}/${data.totalBlocks})`, 'info');
+                
+                // Show challenge response options for all players except the blocker
+                if (playerId !== data.fiscPlayerId) {
+                    showChallengeOpportunity({
+                        message: `${data.fiscPlayerName} claims to have Fisc and wants to block ${data.targetPlayerName}'s ${data.actionType}. Do you challenge this claim?`,
+                        timeLimit: data.timeLimit || 15,
+                        challengeType: 'fisc-block'
+                    });
+                }
+                
+                refreshGameState();
+            });
+
+            socket.on('fisc-block-result', (data) => {
+                logMessage(`🎯 Fisc Block Result: ${data.message}`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('fisc-phase-complete', (data) => {
+                logMessage(`💰 Fisc phase complete: ${data.message}`, 'info');
+                console.log('📥 RECEIVED: fisc-phase-complete', data);
+                refreshGameState();
+            });
+
+            socket.on('terrorist-attack-result', (data) => {
+                logMessage(`💣 Terrorist Attack Result: ${data.message}`, 'info');
+                console.log('📥 RECEIVED: terrorist-attack-result', data);
+                refreshGameState();
+            });
+
+            socket.on('fisc-claim-response', (data) => {
+                if (data.action === 'pass') {
+                    logMessage(`💰 Fisc Claim: ${data.playerId} passed on claim opportunity`, 'info');
+                } else if (data.action === 'claim') {
+                    logMessage(`💰 Fisc Claim: Coins were claimed by Fisc!`, 'info');
+                }
+                refreshGameState();
+            });
+
+            // Exposition/Corruption events
+            socket.on('exposition-action', (data) => {
+                console.log('📥 RECEIVED: exposition-action', data);
+                logMessage(`🔍 Exposition: ${data.exposingPlayerName} pays 7 coins to expose ${data.targetPlayerName}`, 'info');
+                
+                // Show corruption opportunity for the target player
+                if (playerId === data.targetPlayerId) {
+                    showCorruptionOpportunity(data.exposingPlayerName, data.timeLimit || 15);
+                }
+                
+                refreshGameState();
+            });
+
+            socket.on('corruption-action', (data) => {
+                console.log('📥 RECEIVED: corruption-action', data);
+                logMessage(`💰 Corruption: ${data.targetPlayerName} pays 8 coins to block exposition`, 'info');
+                refreshGameState();
+            });
+
+            socket.on('exposition-effect', (data) => {
+                console.log('📥 RECEIVED: exposition-effect', data);
+                const message = data.eliminated 
+                    ? `🔍 ${data.targetPlayerName} loses their last card and is eliminated by ${data.exposingPlayerName}'s exposition!`
+                    : `🔍 ${data.targetPlayerName} loses a card to ${data.exposingPlayerName}'s exposition`;
+                logMessage(message, 'info');
+                refreshGameState();
+            });
+
+            socket.on('corruption-response', (data) => {
+                console.log('📥 RECEIVED: corruption-response', data);
+                if (data.action === 'pass') {
+                    logMessage(`🔍 Corruption: ${data.playerId} chooses not to corrupt - loses a card`, 'info');
+                } else if (data.action === 'corrupt') {
+                    logMessage(`💰 Corruption: ${data.playerId} pays 8 coins to block exposition`, 'info');
+                }
+                refreshGameState();
+            });
+
+            socket.on('corruption-error', (error) => {
+                console.error('❌ Corruption Error:', error);
+                logMessage(`Error: ${error.message}`, 'error');
+            });
+
+            // Game state updates
+            socket.on('game-state-updated', (gameState) => {
+                console.log('🔄 Received game-state-updated event:', gameState);
+                logMessage('Game state updated via WebSocket', 'info');
+                updateGameState(gameState);
+                refreshGameState(); // Also refresh to ensure everything is synchronized
+            });
+
+            // Game end
+            socket.on('game-ended', (data) => {
+                const endMsg = `🏆 GAME OVER! Winner: ${data.winner || 'Draw'}`;
+                logMessage(endMsg, 'info');
+                console.log('📥 RECEIVED: game-ended', data);
+                refreshGameState();
+                
+                // Show game over screen after a delay
+                setTimeout(() => {
+                    if (confirm(`Game Over! ${data.winner ? data.winner + ' wins!' : 'Draw!'}\n\nWould you like to return to the lobby?`)) {
+                        window.location.href = 'lobby-test.html';
+                    }
+                }, 2000);
+            });
+
+            // Catch-all for any other events - based on display-enhanced.html
+            socket.onAny((eventName, ...args) => {
+                if (!['connect', 'disconnect', 'player-joined', 'player-left', 'challenge-opportunity', 
+                      'challenge-response', 'game-state-updated', 'challenge-error', 'connect_error',
+                      'player-action', 'challenge-result', 'action-resolved', 'game-ended', 'challenge-response-update',
+                      'politician-card-selection', 'police-card-inspection', 'police-card-selection', 
+                      'colonel-role-guess', 'colonel-result', 'thief-counter-opportunity', 'thief-counter-challenge', 
+                      'thief-counter-result', 'thief-steal-result', 'police-counter-opportunity', 'police-counter-challenge', 
+                      'police-counter-result', 'terrorist-card-selection', 'terrorist-attack-result',
+                      'colonel-counter-opportunity', 'colonel-counter-challenge', 'colonel-counter-result',
+                      'fisc-claim-opportunity', 'fisc-claim-submitted', 'fisc-claim-challenge', 'fisc-claim-result',
+                      'fisc-phase-complete', 'fisc-block-opportunity', 'fisc-block-attempt', 'fisc-block-challenge',
+                      'fisc-block-result', 'fisc-block-complete', 'exposition-action', 'corruption-action', 
+                      'exposition-effect', 'corruption-response', 'corruption-error'].includes(eventName)) {
+                    console.log(`📥 RECEIVED: ${eventName}`, args);
+                }
+            });
+
+            socket.on('error', (error) => {
+                console.error('Socket error:', error);
+                logMessage(`Socket error: ${error.message || error}`, 'error');
+            });
+        }
+
+        // Core game functions - Based on display-enhanced.html
+        async function refreshGameState() {
+            if (!gameId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/state`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateGameState(result.data);
+                    logMessage('Game state refreshed', 'info');
+                } else {
+                    logMessage(`Failed to refresh state: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error refreshing game state:', error);
+                logMessage('Failed to refresh game state', 'error');
+            }
+        }
+
+        async function updatePlayerHand() {
+            try {
+                // Add visual feedback
+                const handDiv = document.getElementById('playerHand');
+                handDiv.classList.add('hand-updating');
+                
+                const response = await fetch(`${API_BASE}/players/${gameId}/${playerId}/hand`);
+                const result = await response.json();
+                
+                const cardCountSpan = document.getElementById('playerCards');
+                handDiv.innerHTML = '';
+                
+                if (result.success && result.data && result.data.hand) {
+                    const cards = result.data.hand;
+                    
+                    // Update card count
+                    cardCountSpan.textContent = cards.length;
+                    
+                    // Display each card with enhanced styling
+                    cards.forEach((card, index) => {
+                        const cardElement = document.createElement('div');
+                        cardElement.className = `card clickable-card card-role ${card}`;
+                        cardElement.textContent = card;
+                        cardElement.title = `Card ${index + 1}: ${card} (Click to lose this card)`;
+                        
+                        // Add click handler to lose card
+                        cardElement.onclick = () => loseCard(index, card);
+                        
+                        handDiv.appendChild(cardElement);
+                    });
+                    
+                    // Show hand info
+                    logMessage(`Hand updated: ${cards.length} cards [${cards.join(', ')}]`, 'info');
+                    
+                    // Success visual feedback
+                    handDiv.classList.remove('hand-updating');
+                    handDiv.classList.add('hand-updated');
+                    setTimeout(() => {
+                        handDiv.classList.remove('hand-updated');
+                    }, 1000);
+                    
+                } else {
+                    // Fallback to public player data if private hand not accessible
+                    const player = gameData.players.find(p => p.id === playerId);
+                    if (player && player.hand) {
+                        cardCountSpan.textContent = player.hand.length;
+                        handDiv.innerHTML = `<div class="waiting-message">${player.hand.length} cards (hidden)</div>`;
+                    } else {
+                        handDiv.innerHTML = `<div class="waiting-message">No cards in hand</div>`;
+                    }
+                }
+                
+            } catch (error) {
+                // Silently fail but log error for debugging
+                console.error(`Error fetching hand:`, error);
+                
+                // Remove updating visual feedback
+                const handDiv = document.getElementById('playerHand');
+                handDiv.classList.remove('hand-updating');
+                
+                // Fallback to public data
+                const player = gameData.players.find(p => p.id === playerId);
+                if (player) {
+                    const cardCountSpan = document.getElementById('playerCards');
+                    cardCountSpan.textContent = player.hand ? player.hand.length : 0;
+                    handDiv.innerHTML = `<div class="waiting-message">🎴 ${player.hand ? player.hand.length : 0} cards</div>`;
+                }
+            }
+        }
+
+        function updateGameState(newGameData) {
+            gameData = newGameData;
+            currentPlayer = gameData.players.find(p => p.id === playerId);
+            
+            if (!currentPlayer) {
+                console.error('Current player not found in game data');
+                return;
+            }
+
+            // Update player info
+            document.getElementById('playerName').textContent = currentPlayer.name;
+            document.getElementById('playerCoins').textContent = currentPlayer.coins;
+            
+            // Update player avatar
+            const currentPlayerAvatarIndices = currentPlayer.avatarIndices || [1, 1, 1];
+            const currentPlayerAvatarUrl = getAvatarUrlFromIndices(currentPlayerAvatarIndices);
+            const avatarElement = document.getElementById('currentPlayerAvatar');
+            if (avatarElement) {
+                avatarElement.src = currentPlayerAvatarUrl;
+            }
+            
+            // Update card count properly
+            const cardCount = currentPlayer.hand ? currentPlayer.hand.length : (currentPlayer.handSize || 0);
+            document.getElementById('playerCards').textContent = cardCount;
+            
+            // Update turn status
+            const isCurrentTurn = gameData.currentPlayerIndex !== undefined && 
+                                gameData.players[gameData.currentPlayerIndex]?.id === playerId;
+            document.getElementById('turnStatus').textContent = isCurrentTurn ? 'Your Turn' : 'Waiting';
+            
+            // Update game status
+            document.getElementById('gameState').textContent = gameData.gameState;
+            document.getElementById('bankCoins').textContent = gameData.bank || 0;
+            document.getElementById('deckSize').textContent = gameData.deckSize || 0;
+            
+            // Update current player name
+            const currentTurnPlayer = gameData.currentPlayerIndex !== undefined ? 
+                gameData.players[gameData.currentPlayerIndex]?.name : '-';
+            document.getElementById('currentPlayerName').textContent = currentTurnPlayer;
+            
+            // Update other players
+            updateOtherPlayers();
+            
+            // Update actions
+            updateActions();
+            
+            // Get player hand (this will fetch the actual cards)
+            updatePlayerHand();
+        }
+
+        function updateOtherPlayers() {
+            const container = document.getElementById('otherPlayers');
+            const otherPlayers = gameData.players.filter(p => p.id !== playerId);
+            
+            container.innerHTML = otherPlayers.map(player => {
+                const isCurrentTurn = gameData.currentPlayerIndex !== undefined &&
+                                    gameData.players[gameData.currentPlayerIndex]?.id === player.id;
+                
+                const avatarIndices = player.avatarIndices || [1, 1, 1];
+                const avatarUrl = getAvatarUrlFromIndices(avatarIndices);
+                
+                return `
+                    <div class="other-player ${isCurrentTurn ? 'current-turn' : ''} ${!player.alive ? 'eliminated' : ''}">
+                        <div class="player-info">
+                            <img src="${avatarUrl}" class="player-avatar" alt="Player Avatar" />
+                            <div class="player-name-text">
+                                ${player.name}
+                                ${isCurrentTurn ? '<span class="turn-indicator">Turn</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="other-player-stats">
+                            <span>💰 ${player.coins}</span>
+                            <span>🎴 ${player.hand ? player.hand.length : (player.handSize || 0)}</span>
+                            <span>${player.alive ? '✅' : '💀'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateActions() {
+            const container = document.getElementById('actionsGrid');
+            const isMyTurn = gameData.currentPlayerIndex !== undefined && 
+                           gameData.players[gameData.currentPlayerIndex]?.id === playerId;
+            
+            if (!isMyTurn) {
+                container.innerHTML = '<div class="waiting-message">Waiting for your turn...</div>';
+                return;
+            }
+
+            // Check if actions should be disabled based on game state
+            const canPerformActions = gameData.gameState === 'in_progress';
+            const canPerformCorruption = gameData.gameState === 'exposition_corruption_phase';
+
+            // Show appropriate message if actions are disabled
+            if (!canPerformActions && !canPerformCorruption) {
+                container.innerHTML = '<div class="waiting-message">Waiting for current phase to complete...</div>';
+                return;
+            }
+
+            const actions = [
+                { id: 'income', label: 'Income (+1)', class: 'basic-action', needsTarget: false, needsRole: false },
+                { id: 'governmental_aid', label: 'Gov Aid (+2)', class: 'basic-action', needsTarget: false, needsRole: false },
+                { id: 'pass', label: 'Pass', class: 'basic-action', needsTarget: false, needsRole: false },
+                { id: 'businessman', label: 'Businessman (+4)', class: 'role-action', needsTarget: false, needsRole: true },
+                { id: 'politician', label: 'Politician (Cards)', class: 'role-action', needsTarget: false, needsRole: true },
+                { id: 'terrorist', label: 'Terrorist (Attack)', class: 'role-action', needsTarget: true, needsRole: true },
+                { id: 'thief', label: 'Thief (Steal)', class: 'role-action', needsTarget: true, needsRole: true },
+                { id: 'police', label: 'Police (Inspect)', class: 'role-action', needsTarget: true, needsRole: true },
+                { id: 'colonel', label: 'Colonel (Counter)', class: 'role-action', needsTarget: true, needsRole: true },
+                { id: 'fisc', label: 'Fisc (Tax)', class: 'role-action', needsTarget: true, needsRole: true },
+                { id: 'exposition', label: 'Exposition (7💰)', class: 'special-action', needsTarget: true, needsRole: false },
+                { id: 'corruption', label: 'Corruption (8💰)', class: 'special-action', needsTarget: false, needsRole: false }
+            ];
+
+            container.innerHTML = actions.map(action => {
+                // Determine if this action should be enabled
+                let isEnabled = canPerformActions;
+                if (action.id === 'corruption') {
+                    isEnabled = canPerformCorruption;
+                }
+                
+                const disabledAttr = isEnabled ? '' : ' disabled';
+                const disabledClass = isEnabled ? '' : ' disabled';
+                
+                return `
+                    <button class="action-btn ${action.class}${disabledClass}" onclick="selectAction('${action.id}', ${action.needsTarget}, ${action.needsRole})"${disabledAttr}>
+                        ${action.label}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectAction(actionType, needsTarget, needsRole) {
+            pendingAction = actionType;
+            
+            if (needsTarget) {
+                showTargetSelection();
+            } else if (needsRole) {
+                showRoleClaimSelection(actionType);
+            } else {
+                executeAction(actionType);
+            }
+        }
+
+        function showTargetSelection() {
+            const container = document.getElementById('targetSelection');
+            const grid = document.getElementById('targetGrid');
+            const otherPlayers = gameData.players.filter(p => p.id !== playerId && p.alive);
+            
+            grid.innerHTML = otherPlayers.map(player => `
+                <button class="selectable-card" onclick="selectTarget('${player.id}')">
+                    ${player.name}
+                </button>
+            `).join('');
+            
+            container.classList.remove('hidden');
+        }
+
+        function selectTarget(targetId) {
+            selectedTarget = targetId;
+            document.getElementById('targetSelection').classList.add('hidden');
+            
+            // Check if we need role claim
+            const needsRoleClaim = ['businessman', 'politician', 'terrorist', 'thief', 'police', 'colonel', 'fisc'].includes(pendingAction);
+            
+            if (needsRoleClaim) {
+                showRoleClaimSelection(pendingAction);
+            } else {
+                executeAction(pendingAction, selectedTarget);
+            }
+        }
+
+        function showRoleClaimSelection(actionType) {
+            // Map action types to correct English role names as used in backend
+            const roleMap = {
+                'businessman': 'Businessman',
+                'politician': 'Politician',  // English name
+                'terrorist': 'Terrorist',   // English name
+                'thief': 'Thief',          // English name
+                'police': 'Police',       // English name
+                'colonel': 'Colonel',
+                'fisc': 'Fisc'
+            };
+            
+            const claimedRole = roleMap[actionType];
+            if (claimedRole) {
+                executeAction(pendingAction, selectedTarget, claimedRole);
+            } else {
+                executeAction(pendingAction, selectedTarget);
+            }
+        }
+
+        function cancelTargetSelection() {
+            document.getElementById('targetSelection').classList.add('hidden');
+            selectedTarget = null;
+            pendingAction = null;
+        }
+
+        async function executeAction(actionType, targetId = null, claimedRole = null) {
+            try {
+                const body = {
+                    playerId: playerId,
+                    type: actionType
+                };
+                
+                if (targetId) body.targetId = targetId;
+                if (claimedRole) body.claimedRole = claimedRole;
+                
+                logMessage(`Executing action: ${actionType}${targetId ? ` targeting ${getPlayerName(targetId)}` : ''}${claimedRole ? ` claiming ${claimedRole}` : ''}`, 'action');
+                
+                const response = await fetch(`${API_BASE}/games/${gameId}/actions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(result.message, 'action');
+                    
+                    // Handle politician card selection
+                    if (result.politicianCardSelection) {
+                        const selection = result.politicianCardSelection;
+                        showPoliticianCardSelection(
+                            selection.originalHand,
+                            selection.drawnCards,
+                            selection.mustSelect
+                        );
+                    }
+                    
+                    // Don't manually update state - let WebSocket handle it
+                } else {
+                    logMessage(`Action failed: ${result.message}`, 'error');
+                }
+                
+                // Reset selection states
+                selectedTarget = null;
+                pendingAction = null;
+                
+            } catch (error) {
+                console.error('Error executing action:', error);
+                logMessage('Failed to execute action', 'error');
+            }
+        }
+
+        async function loseCard(cardIndex, cardName) {
+            if (!confirm(`Are you sure you want to lose the card "${cardName}"?`)) {
+                return;
+            }
+            
+            try {
+                logMessage(`Losing card: ${cardName} (index ${cardIndex})`, 'action');
+                
+                const response = await fetch(`${API_BASE}/players/${gameId}/${playerId}/cards/lose`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cardIndex: cardIndex.toString()
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Successfully lost card: ${cardName}`, 'action');
+                    // Refresh hand and game state
+                    await updatePlayerHand();
+                    await refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to lose card: ${result.message}`, 'error');
+                }
+                
+            } catch (error) {
+                logMessage(`Error losing card: ${error.message}`, 'error');
+            }
+        }
+
+        function getPlayerName(playerId) {
+            const player = gameData.players.find(p => p.id === playerId);
+            return player ? player.name : 'Unknown Player';
+        }
+
+        // Challenge System - Based on display-enhanced.html
+        function showChallengeOpportunity(data) {
+            // Clear any existing challenge timeout first
+            if (challengeTimeout) {
+                clearInterval(challengeTimeout);
+                challengeTimeout = null;
+            }
+            
+            // Reset challenge response flag for new opportunity
+            challengeResponseSent = false;
+            
+            const panel = document.getElementById('challengeOpportunityPanel');
+            const description = document.getElementById('challengeDescription');
+            const timer = document.getElementById('challengeTimer');
+            
+            description.textContent = data.message;
+            
+            let timeLeft = 10;
+            timer.textContent = `Time remaining: ${timeLeft}s`;
+            
+            challengeTimeout = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(challengeTimeout);
+                    challengeTimeout = null;
+                    hideChallengeOpportunity();
+                    // Only auto-pass if the challenge panel is still visible and we're likely still in challenge phase
+                    if (!document.getElementById('challengeOpportunityPanel').classList.contains('hidden')) {
+                        passChallenge();
+                    }
+                }
+            }, 1000);
+            
+            panel.classList.remove('hidden');
+        }
+
+        function hideChallengeOpportunity() {
+            document.getElementById('challengeOpportunityPanel').classList.add('hidden');
+            if (challengeTimeout) {
+                clearInterval(challengeTimeout);
+                challengeTimeout = null;
+            }
+            // Reset the flag when hiding the opportunity
+            challengeResponseSent = false;
+        }
+
+        async function submitChallenge() {
+            if (challengeResponseSent) return; // Prevent duplicate submissions
+            
+            try {
+                challengeResponseSent = true;
+                await respondToChallenge(playerId, 'challenge');
+                hideChallengeOpportunity();
+                
+            } catch (error) {
+                console.error('Error challenging action:', error);
+                logMessage('Failed to submit challenge', 'error');
+                challengeResponseSent = false; // Reset on error
+            }
+        }
+
+        async function passChallenge() {
+            if (challengeResponseSent) return; // Prevent duplicate submissions
+            
+            try {
+                challengeResponseSent = true;
+                await respondToChallenge(playerId, 'pass');
+                hideChallengeOpportunity();
+                
+            } catch (error) {
+                console.error('Error passing challenge:', error);
+                challengeResponseSent = false; // Reset on error
+            }
+        }
+
+        async function respondToChallenge(playerId, response) {
+            try {
+                const apiResponse = await fetch(`${API_BASE}/games/${gameId}/challenge/response`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: playerId,
+                        response: response
+                    })
+                });
+
+                const result = await apiResponse.json();
+                
+                if (result.success) {
+                    logMessage(`⚔️ Challenge response: ${response === 'challenge' ? 'Challenged' : 'Passed'}`, 'challenge');
+                    refreshGameState();
+                } else {
+                    // Don't show error if game is not in challenge phase - this is expected when challenge ends naturally
+                    if (!result.message.includes('not in challenge phase')) {
+                        logMessage(`❌ Failed to submit challenge response: ${result.message}`, 'error');
+                    }
+                }
+
+            } catch (error) {
+                logMessage(`Error responding to challenge: ${error.message}`, 'error');
+            }
+        }
+
+        // Politician Card Selection - Based on display-enhanced.html
+        function showPoliticianCardSelection(originalHand, drawnCards, mustSelect) {
+            console.log('Politician card selection:', { originalHand, drawnCards, mustSelect });
+            
+            politicianSelection = {
+                originalHand: originalHand,
+                drawnCards: drawnCards,
+                mustSelect: mustSelect,
+                selectedCards: []
+            };
+            
+            document.getElementById('mustSelectCount').textContent = mustSelect;
+            document.getElementById('totalToSelect').textContent = mustSelect;
+            updatePoliticianSelectionCount();
+
+            // Populate original cards
+            const originalContainer = document.getElementById('originalCards');
+            originalContainer.innerHTML = '';
+            originalHand.forEach((card, index) => {
+                const cardElement = createSelectableCard(card, 'original', `original-${index}`);
+                originalContainer.appendChild(cardElement);
+            });
+
+            // Populate drawn cards
+            const drawnContainer = document.getElementById('drawnCards');
+            drawnContainer.innerHTML = '';
+            drawnCards.forEach((card, index) => {
+                const cardElement = createSelectableCard(card, 'drawn', `drawn-${index}`);
+                drawnContainer.appendChild(cardElement);
+            });
+
+            // Show panel
+            console.log('Showing politician panel...');
+            const panel = document.getElementById('politicianPanel');
+            console.log('Panel found:', panel);
+            panel.classList.remove('hidden');
+            console.log('Panel classes after showing:', panel.className);
+            
+            logMessage(`🏛️ Politician Card Selection: Choose ${mustSelect} cards to keep`, 'info');
+        }
+
+        function createSelectableCard(cardName, type, id) {
+            const cardElement = document.createElement('div');
+            cardElement.className = `selectable-card ${type} card-role ${cardName}`;
+            cardElement.id = id;
+            cardElement.textContent = cardName;
+            cardElement.onclick = () => togglePoliticianCardSelection(cardName, cardElement);
+            
+            return cardElement;
+        }
+
+        function togglePoliticianCardSelection(cardName, cardElement) {
+            const isSelected = cardElement.classList.contains('selected');
+            
+            if (isSelected) {
+                // Deselect card
+                cardElement.classList.remove('selected');
+                politicianSelection.selectedCards = politicianSelection.selectedCards.filter(card => card !== cardName);
+            } else {
+                // Select card (if not at limit)
+                if (politicianSelection.selectedCards.length < politicianSelection.mustSelect) {
+                    cardElement.classList.add('selected');
+                    politicianSelection.selectedCards.push(cardName);
+                } else {
+                    // Show feedback that selection is full
+                    cardElement.style.animation = 'shake 0.3s ease-in-out';
+                    setTimeout(() => {
+                        cardElement.style.animation = '';
+                    }, 300);
+                }
+            }
+            
+            updatePoliticianSelectionCount();
+        }
+
+        function updatePoliticianSelectionCount() {
+            const selectedCount = politicianSelection.selectedCards.length;
+            const required = politicianSelection.mustSelect;
+            
+            document.getElementById('selectedCount').textContent = selectedCount;
+            
+            // Enable/disable confirm button
+            const confirmButton = document.getElementById('confirmSelection');
+            confirmButton.disabled = selectedCount !== required;
+        }
+
+        async function confirmPoliticianSelection() {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/politician/select-cards`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: playerId,
+                        selectedCards: politicianSelection.selectedCards
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Politician selection completed`, 'action');
+                    closePoliticianPanel();
+                    // Don't manually refresh - let WebSocket events handle the state updates
+                    // The server will send 'player-action' and 'game-state-updated' events
+                } else {
+                    logMessage(`❌ Failed to confirm selection: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error in confirmPoliticianSelection:', error);
+                logMessage(`Error confirming politician selection: ${error.message}`, 'error');
+            }
+        }
+
+        function closePoliticianPanel() {
+            document.getElementById('politicianPanel').classList.add('hidden');
+            politicianSelection = {
+                originalHand: [],
+                drawnCards: [],
+                mustSelect: 0,
+                selectedCards: []
+            };
+        }
+
+        // Police Card Selection - Based on display-enhanced.html
+        function showPoliceCardSelection(targetHand, policeName) {
+            console.log('Police card selection:', { targetHand, policeName });
+            
+            document.getElementById('policeOfficerName').textContent = policeName;
+            
+            const cardGrid = document.getElementById('policeCardGrid');
+            cardGrid.innerHTML = '';
+            
+            targetHand.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = `selectable-card card-role ${card}`;
+                cardElement.textContent = card;
+                cardElement.onclick = () => selectPoliceCard(index, card);
+                cardGrid.appendChild(cardElement);
+            });
+            
+            document.getElementById('policeCardSelectionPanel').classList.remove('hidden');
+        }
+
+        async function selectPoliceCard(cardIndex, cardName) {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/police/card-selection`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        targetPlayerId: playerId,
+                        cardIndex: cardIndex
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Card selected for police inspection: ${cardName}`, 'action');
+                    closePoliceCardSelection();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to select card: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error in selectPoliceCard:', error);
+                logMessage(`Error selecting card for police: ${error.message}`, 'error');
+            }
+        }
+
+        function cancelPoliceSelection() {
+            closePoliceCardSelection();
+        }
+
+        function closePoliceCardSelection() {
+            document.getElementById('policeCardSelectionPanel').classList.add('hidden');
+        }
+
+        // Police Decision - Based on display-enhanced.html
+        function showPoliceInspectionDecision(targetPlayerName, shownCard) {
+            console.log('Police inspection decision:', { targetPlayerName, shownCard });
+            
+            document.getElementById('inspectedPlayerName').textContent = targetPlayerName;
+            document.getElementById('inspectedCard').textContent = shownCard;
+            
+            document.getElementById('policeDecisionPanel').classList.remove('hidden');
+        }
+
+        async function policeDecision(decision) {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/police/decision`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        policePlayerId: playerId,
+                        decision: decision
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Police decision completed: ${decision}`, 'action');
+                    closePoliceDecision();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to process police decision: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error in policeDecision:', error);
+                logMessage(`Error processing police decision: ${error.message}`, 'error');
+            }
+        }
+
+        function closePoliceDecision() {
+            document.getElementById('policeDecisionPanel').classList.add('hidden');
+        }
+
+        // Terrorist Card Selection - Based on display-enhanced.html
+        function showTerroristCardSelection(targetHand, terroristName) {
+            console.log('Terrorist card selection:', { targetHand, terroristName });
+            
+            document.getElementById('terroristName').textContent = terroristName;
+            
+            const cardGrid = document.getElementById('terroristCardGrid');
+            cardGrid.innerHTML = '';
+            
+            targetHand.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = `selectable-card card-role ${card}`;
+                cardElement.textContent = card;
+                cardElement.onclick = () => selectTerroristCard(index, card);
+                cardGrid.appendChild(cardElement);
+            });
+            
+            document.getElementById('terroristCardSelectionPanel').classList.remove('hidden');
+        }
+
+        async function selectTerroristCard(cardIndex, cardName) {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/terrorist/card-selection`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: playerId,
+                        cardIndex: cardIndex
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Card selected for terrorist attack: ${cardName}`, 'action');
+                    closeTerroristCardSelection();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to select card: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error in selectTerroristCard:', error);
+                logMessage(`Error selecting card for terrorist: ${error.message}`, 'error');
+            }
+        }
+
+        function cancelTerroristSelection() {
+            closeTerroristCardSelection();
+        }
+
+        function closeTerroristCardSelection() {
+            document.getElementById('terroristCardSelectionPanel').classList.add('hidden');
+        }
+
+        // Colonel Role Guess - Based on display-enhanced.html
+        function showColonelRoleGuess(targetPlayerName) {
+            console.log('Colonel role guess:', { targetPlayerName });
+            
+            document.getElementById('colonelTargetName').textContent = targetPlayerName;
+            
+            const roleGrid = document.getElementById('roleGuessGrid');
+            roleGrid.innerHTML = '';
+            
+            const roles = ['Businessman', 'Politician', 'Terrorist', 'Thief', 'Police', 'Colonel', 'Fisc'];
+            roles.forEach(role => {
+                const roleElement = document.createElement('div');
+                roleElement.className = 'selectable-role';
+                roleElement.textContent = role;
+                roleElement.onclick = () => selectColonelRoleGuess(role);
+                roleGrid.appendChild(roleElement);
+            });
+            
+            document.getElementById('colonelRoleGuessPanel').classList.remove('hidden');
+        }
+
+        async function selectColonelRoleGuess(guessedRole) {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/colonel/role-guess`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        colonelPlayerId: playerId,
+                        guessedRole: guessedRole
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`✅ Colonel guessed: ${guessedRole}`, 'action');
+                    closeColonelRoleGuess();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to guess role: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error in selectColonelRoleGuess:', error);
+                logMessage(`Error guessing role: ${error.message}`, 'error');
+            }
+        }
+
+        function cancelColonelGuess() {
+            closeColonelRoleGuess();
+        }
+
+        function closeColonelRoleGuess() {
+            document.getElementById('colonelRoleGuessPanel').classList.add('hidden');
+        }
+
+        // Card Loss Selection System
+        let cardLossData = null;
+
+        function showCardLossSelection(availableCards, selectionId, timeoutMs, deadlineTime, serverTime) {
+            console.log('Card loss selection:', { availableCards, selectionId, timeoutMs, deadlineTime, serverTime });
+            
+            // Calculate the time offset between client and server
+            const clientTime = Date.now();
+            const timeOffset = clientTime - serverTime;
+            
+            // Calculate adjusted deadline for client
+            const adjustedDeadline = deadlineTime + timeOffset;
+            
+            cardLossData = {
+                availableCards: availableCards,
+                selectionId: selectionId,
+                timeoutMs: timeoutMs,
+                deadlineTime: adjustedDeadline
+            };
+            
+            const cardGrid = document.getElementById('cardLossGrid');
+            cardGrid.innerHTML = '';
+            
+            availableCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = `selectable-card card-role ${card}`;
+                cardElement.textContent = card;
+                cardElement.onclick = () => selectCardToLose(index, card);
+                cardGrid.appendChild(cardElement);
+            });
+            
+            // Start countdown timer with deadline time
+            startCardLossTimer();
+            
+            const currentTimeLeft = Math.max(0, Math.floor((adjustedDeadline - Date.now()) / 1000));
+            document.getElementById('cardLossSelectionPanel').classList.remove('hidden');
+            logMessage(`🎴 Choose a card to lose (${currentTimeLeft}s timeout)`, 'warning');
+        }
+
+        function selectCardToLose(cardIndex, cardName) {
+            if (!cardLossData) {
+                console.error('No card loss data available');
+                return;
+            }
+
+            // Send the response via socket
+            socket.emit('card-loss-selection-response', {
+                gameId: gameId,
+                playerId: playerId,
+                selectionId: cardLossData.selectionId,
+                selectedCardIndex: cardIndex
+            });
+
+            logMessage(`✅ Selected ${cardName} to lose`, 'action');
+            closeCardLossSelection();
+        }
+
+        function cancelCardLossSelection() {
+            // Auto-select first card if cancelled (same as timeout)
+            if (cardLossData && cardLossData.availableCards.length > 0) {
+                selectCardToLose(0, cardLossData.availableCards[0]);
+            } else {
+                closeCardLossSelection();
+            }
+        }
+
+        function closeCardLossSelection() {
+            document.getElementById('cardLossSelectionPanel').classList.add('hidden');
+            if (cardLossData && cardLossData.timerId) {
+                clearInterval(cardLossData.timerId);
+                cardLossData.timerId = null;
+            }
+            cardLossData = null;
+        }
+
+        function startCardLossTimer() {
+            const timerElement = document.getElementById('cardLossTimer');
+            
+            // Function to update the timer display
+            const updateTimer = () => {
+                const currentTime = Date.now();
+                const timeLeft = Math.max(0, Math.floor((cardLossData.deadlineTime - currentTime) / 1000));
+                timerElement.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(intervalId);
+                    if (cardLossData) {
+                        cardLossData.timerId = null;
+                        // Auto-select first card on timeout
+                        if (cardLossData.availableCards.length > 0) {
+                            logMessage(`⏰ Time's up! Auto-selecting ${cardLossData.availableCards[0]}`, 'warning');
+                            selectCardToLose(0, cardLossData.availableCards[0]);
+                        }
+                    }
+                }
+            };
+            
+            // Update timer display immediately
+            updateTimer();
+            
+            // Store timer ID for cleanup
+            const intervalId = setInterval(() => {
+                // Check if cardLossData still exists (defensive programming)
+                if (!cardLossData) {
+                    clearInterval(intervalId);
+                    return;
+                }
+                
+                updateTimer();
+            }, 1000);
+            
+            cardLossData.timerId = intervalId;
+        }
+
+        // Player Card Selection Notification System
+        let activePlayerChoosingNotifications = new Map(); // Track active notifications
+
+        function showPlayerChoosingCardNotification(data) {
+            console.log('📢 Showing player choosing card notification:', data);
+            
+            // Create notification element if it doesn't exist
+            let notificationContainer = document.getElementById('playerChoosingNotifications');
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'playerChoosingNotifications';
+                notificationContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 1000;
+                    max-width: 300px;
+                `;
+                document.body.appendChild(notificationContainer);
+            }
+
+            // Create individual notification
+            const notification = document.createElement('div');
+            notification.id = `choosing-notification-${data.playerId}`;
+            notification.style.cssText = `
+                background: linear-gradient(135deg, #FFA500, #FF8C00);
+                color: white;
+                padding: 12px 16px;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                border: 2px solid #FFD700;
+                animation: slideInRight 0.3s ease-out;
+                font-weight: bold;
+                position: relative;
+                overflow: hidden;
+            `;
+
+            // Calculate time left
+            const timeLeft = Math.max(0, Math.floor((data.deadlineTime - Date.now()) / 1000));
+
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">⏳</span>
+                    <div>
+                        <div style="font-size: 14px; margin-bottom: 2px;">
+                            ${data.playerName} is choosing a card...
+                        </div>
+                        <div id="choosing-timer-${data.playerId}" style="font-size: 12px; opacity: 0.9;">
+                            Time left: ${timeLeft}s
+                        </div>
+                    </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; height: 3px; background: #FFD700; width: 100%; transform-origin: left;"></div>
+            `;
+
+            notificationContainer.appendChild(notification);
+
+            // Start countdown timer for this notification
+            const timerId = setInterval(() => {
+                const remaining = Math.max(0, Math.floor((data.deadlineTime - Date.now()) / 1000));
+                const timerElement = document.getElementById(`choosing-timer-${data.playerId}`);
+                if (timerElement) {
+                    timerElement.textContent = `Time left: ${remaining}s`;
+                }
+                
+                if (remaining <= 0) {
+                    clearInterval(timerId);
+                    // The notification will be removed by the completion event
+                }
+            }, 1000);
+
+            // Store notification data
+            activePlayerChoosingNotifications.set(data.playerId, {
+                element: notification,
+                timerId: timerId
+            });
+        }
+
+        function hidePlayerChoosingCardNotification(playerId) {
+            console.log('🚫 Hiding player choosing card notification for:', playerId);
+            
+            const notificationData = activePlayerChoosingNotifications.get(playerId);
+            if (notificationData) {
+                // Clear timer
+                if (notificationData.timerId) {
+                    clearInterval(notificationData.timerId);
+                }
+
+                // Animate out and remove
+                const element = notificationData.element;
+                element.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                
+                setTimeout(() => {
+                    if (element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+                }, 300);
+
+                // Remove from tracking
+                activePlayerChoosingNotifications.delete(playerId);
+
+                // Clean up container if empty
+                const container = document.getElementById('playerChoosingNotifications');
+                if (container && container.children.length === 0) {
+                    setTimeout(() => {
+                        if (container.children.length === 0 && container.parentNode) {
+                            container.parentNode.removeChild(container);
+                        }
+                    }, 350);
+                }
+            }
+        }
+
+        // Counter-Claim System - Based on display-enhanced.html
+        function showCounterOpportunity(counterType, attackerName, timeLimit) {
+            console.log('Counter opportunity:', { counterType, attackerName, timeLimit });
+            
+            const panel = document.getElementById('counterOpportunityPanel');
+            const title = document.getElementById('counterTitle');
+            const description = document.getElementById('counterDescription');
+            const timer = document.getElementById('counterTimer');
+            const claimBtn = document.getElementById('counterClaimBtn');
+            
+            // Set up panel content based on counter type
+            const counterMessages = {
+                'thief': {
+                    title: '🏴‍☠️ Thief Counter Opportunity',
+                    description: `${attackerName} is about to steal from you! You can claim you also have Thief to block this action.`,
+                    buttonText: '🏴‍☠️ I have Thief too!'
+                },
+                'police': {
+                    title: '👮 Police Counter Opportunity', 
+                    description: `${attackerName} wants to inspect your hand! You can claim you also have Police to block this action.`,
+                    buttonText: '👮 I have Police too!'
+                },
+                'colonel': {
+                    title: '⭐ Colonel Counter Opportunity',
+                    description: `${attackerName} is trying to kill you with Terrorist! You can claim you have Colonel to block this assassination attempt.`,
+                    buttonText: '⭐ I have Colonel!'
+                }
+            };
+            
+            const config = counterMessages[counterType];
+            if (config) {
+                title.textContent = config.title;
+                description.textContent = config.description;
+                claimBtn.textContent = config.buttonText;
+            }
+            
+            // Clear all active counters first, then set the new one
+            for (const type in activeCounters) {
+                activeCounters[type] = null;
+            }
+            
+            // Store counter type for later use
+            activeCounters[counterType] = {
+                attackerName: attackerName,
+                timeLimit: timeLimit
+            };
+            
+            // Start countdown
+            let timeLeft = timeLimit;
+            timer.textContent = `Time remaining: ${timeLeft}s`;
+            
+            counterTimeout = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(counterTimeout);
+                    hideCounterOpportunity();
+                    passCounterOpportunity();
+                }
+            }, 1000);
+            
+            panel.classList.remove('hidden');
+        }
+
+        function hideCounterOpportunity() {
+            document.getElementById('counterOpportunityPanel').classList.add('hidden');
+            if (counterTimeout) {
+                clearInterval(counterTimeout);
+                counterTimeout = null;
+            }
+        }
+
+        async function submitCounterClaim() {
+            try {
+                // Determine which counter type is active
+                let counterType = null;
+                for (const [type, data] of Object.entries(activeCounters)) {
+                    if (data) {
+                        counterType = type;
+                        break;
+                    }
+                }
+                
+                console.log('DEBUG: Active counters state:', activeCounters);
+                console.log('DEBUG: Determined counter type:', counterType);
+                
+                if (!counterType) {
+                    logMessage('No active counter opportunity', 'error');
+                    return;
+                }
+                
+                const endpoint = `${API_BASE}/games/${gameId}/${counterType}/counter-claim`;
+                console.log('DEBUG: Using endpoint:', endpoint);
+                
+                // Colonel endpoint expects targetPlayerId, others expect playerId
+                let requestBody;
+                if (counterType === 'colonel') {
+                    requestBody = { targetPlayerId: playerId };
+                } else {
+                    requestBody = { playerId: playerId };
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`${counterType} counter-claim submitted: ${result.message}`, 'action');
+                    hideCounterOpportunity();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to submit counter-claim: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`Error submitting counter-claim: ${error.message}`, 'error');
+            }
+        }
+
+        async function passCounterOpportunity() {
+            // Determine which counter type is active
+            let counterType = null;
+            for (const [type, data] of Object.entries(activeCounters)) {
+                if (data) {
+                    counterType = type;
+                    break;
+                }
+            }
+            
+            console.log('DEBUG: Pass - Active counters state:', activeCounters);
+            console.log('DEBUG: Pass - Determined counter type:', counterType);
+            
+            hideCounterOpportunity();
+            logMessage('Passed on counter opportunity', 'info');
+            
+            // Notify server about the pass using HTTP endpoint
+            if (counterType) {
+                try {
+                    const endpoint = `${API_BASE}/games/${gameId}/${counterType}/counter-pass`;
+                    console.log('DEBUG: Pass - Using endpoint:', endpoint);
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            targetPlayerId: playerId
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        logMessage(`${counterType} counter-pass submitted: ${result.message}`, 'action');
+                        refreshGameState();
+                    } else {
+                        logMessage(`❌ Failed to submit counter-pass: ${result.message}`, 'error');
+                    }
+
+                } catch (error) {
+                    logMessage(`Error submitting counter-pass: ${error.message}`, 'error');
+                }
+            }
+            
+            // Clear active counters
+            for (const type in activeCounters) {
+                activeCounters[type] = null;
+            }
+        }
+
+        // Fisc System - Based on display-enhanced.html
+        function showFiscClaimOpportunity(businessmanName, totalCoins, timeLimit) {
+            console.log('Fisc claim opportunity:', { businessmanName, totalCoins, timeLimit });
+            
+            const panel = document.getElementById('fiscClaimPanel');
+            const timer = document.getElementById('fiscClaimTimer');
+            
+            document.getElementById('businessmanName').textContent = businessmanName;
+            document.getElementById('coinsAmount').textContent = totalCoins;
+            
+            let timeLeft = timeLimit;
+            timer.textContent = `Time remaining: ${timeLeft}s`;
+            
+            fiscTimeout = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(fiscTimeout);
+                    hideFiscClaimOpportunity();
+                    passFiscClaim();
+                }
+            }, 1000);
+            
+            panel.classList.remove('hidden');
+        }
+
+        function hideFiscClaimOpportunity() {
+            document.getElementById('fiscClaimPanel').classList.add('hidden');
+            if (fiscTimeout) {
+                clearInterval(fiscTimeout);
+                fiscTimeout = null;
+            }
+        }
+
+        async function submitFiscClaim() {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/fisc/claim`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscPlayerId: playerId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`💰 Fisc claim submitted: ${result.message}`, 'action');
+                    hideFiscClaimOpportunity();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to submit Fisc claim: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`Error submitting Fisc claim: ${error.message}`, 'error');
+            }
+        }
+
+        function passFiscClaim() {
+            hideFiscClaimOpportunity();
+            logMessage('Passed on Fisc claim opportunity', 'info');
+            
+            // Notify server about the pass
+            if (socket && socket.connected) {
+                socket.emit('fisc-claim-pass', {
+                    gameId: gameId,
+                    playerId: playerId
+                });
+            }
+        }
+
+        function showFiscBlockOpportunity(targetName, actionType, timeLimit) {
+            console.log('Fisc block opportunity:', { targetName, actionType, timeLimit });
+            
+            const panel = document.getElementById('fiscBlockPanel');
+            const timer = document.getElementById('fiscBlockTimer');
+            
+            document.getElementById('blockTargetName').textContent = targetName;
+            document.getElementById('blockActionType').textContent = actionType;
+            
+            let timeLeft = timeLimit;
+            timer.textContent = `Time remaining: ${timeLeft}s`;
+            
+            fiscTimeout = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(fiscTimeout);
+                    hideFiscBlockOpportunity();
+                    passFiscBlock();
+                }
+            }, 1000);
+            
+            panel.classList.remove('hidden');
+        }
+
+        function hideFiscBlockOpportunity() {
+            document.getElementById('fiscBlockPanel').classList.add('hidden');
+            if (fiscTimeout) {
+                clearInterval(fiscTimeout);
+                fiscTimeout = null;
+            }
+        }
+
+        async function submitFiscBlock() {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/fisc/block`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscPlayerId: playerId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`🚫 Fisc block submitted: ${result.message}`, 'action');
+                    hideFiscBlockOpportunity();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to submit Fisc block: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`Error submitting Fisc block: ${error.message}`, 'error');
+            }
+        }
+
+        function passFiscBlock() {
+            hideFiscBlockOpportunity();
+            logMessage('Passed on Fisc block opportunity', 'info');
+            
+            // Notify server about the pass
+            if (socket && socket.connected) {
+                socket.emit('fisc-block-pass', {
+                    gameId: gameId,
+                    playerId: playerId
+                });
+            }
+        }
+
+        // Corruption Opportunity Functions
+        function showCorruptionOpportunity(exposingPlayerName, timeLimit) {
+            console.log('Corruption opportunity:', { exposingPlayerName, timeLimit });
+            
+            const modal = document.getElementById('corruptionModal');
+            const description = document.getElementById('corruptionDescription');
+            const timer = document.getElementById('corruptionTimer');
+            
+            description.textContent = `${exposingPlayerName} is exposing you! You can pay 8 coins for corruption to block this.`;
+            
+            // Start countdown
+            let timeLeft = timeLimit;
+            timer.textContent = `Time remaining: ${timeLeft}s`;
+            
+            corruptionTimeout = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `Time remaining: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(corruptionTimeout);
+                    hideCorruptionOpportunity();
+                    passCorruption();
+                }
+            }, 1000);
+            
+            modal.classList.remove('hidden');
+        }
+
+        function hideCorruptionOpportunity() {
+            document.getElementById('corruptionModal').classList.add('hidden');
+            if (corruptionTimeout) {
+                clearInterval(corruptionTimeout);
+                corruptionTimeout = null;
+            }
+        }
+
+        async function submitCorruption() {
+            try {
+                const response = await fetch(`${API_BASE}/games/${gameId}/corruption`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: playerId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    logMessage(`💰 Corruption submitted: ${result.message}`, 'action');
+                    hideCorruptionOpportunity();
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to submit corruption: ${result.message}`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`Error submitting corruption: ${error.message}`, 'error');
+            }
+        }
+
+        function passCorruption() {
+            hideCorruptionOpportunity();
+            logMessage('Passed on corruption opportunity - will lose a card', 'info');
+            
+            // Notify server about the pass via REST API
+            fetch(`${API_BASE}/games/${gameId}/corruption/pass`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    playerId: playerId
+                })
+            }).then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    logMessage(`🔍 Corruption pass: ${result.message}`, 'info');
+                    refreshGameState();
+                } else {
+                    logMessage(`❌ Failed to pass corruption: ${result.message}`, 'error');
+                }
+            }).catch(error => {
+                logMessage(`Error passing corruption: ${error.message}`, 'error');
+            });
+        }
+
+        // Utility Functions
+        function logMessage(message, type = 'info') {
+            const log = document.getElementById('gameLog');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function leaveGame() {
+            if (confirm('Are you sure you want to leave the game?')) {
+                // Disconnect from socket
+                if (socket) {
+                    socket.disconnect();
+                }
+                
+                // Go back to lobby
+                window.location.href = 'lobby-test.html';
+            }
+        }
+
+        function showGameHelp() {
+            const helpText = `
+🎮 EL MAKINA - GAME RULES
+
+📋 BASIC ACTIONS (No role required):
+• Income: Get 1 coin (safe action)
+• Governmental Aid: Get 2 coins (can be blocked by Fisc)
+• Pass: Skip your turn
+
+🎭 ROLE ACTIONS (Claim a role, can be challenged):
+• Businessman: Get 4 coins (can be taxed by Fisc)
+• Politician: Exchange cards with deck
+• Terrorist: Pay 3 coins to eliminate a player
+• Thief: Steal 2 coins from target
+• Police: Inspect target's hand
+• Colonel: Counter terrorist attacks
+• Fisc: Tax businessman or block government aid
+
+💰 SPECIAL ACTIONS:
+• Exposition: Pay 7 coins to eliminate a card
+• Corruption: Pay 8 coins to block exposition
+
+🚨 CHALLENGE SYSTEM:
+• You can challenge others' role claims
+• If successful: They lose a card
+• If failed: You lose a card
+
+🏆 WIN CONDITION:
+• Be the last player standing (others eliminated)
+• Players are eliminated when they have no cards left
+
+⌨️ SHORTCUTS:
+• ESC: Cancel current selection
+            `;
+            
+            alert(helpText);
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Game error:', e.error);
+            logMessage(`Error: ${e.message}`, 'error');
+        });
+
+        // Handle page unload
+        window.addEventListener('beforeunload', function(e) {
+            if (socket) {
+                socket.disconnect();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Cancel current selections
+                document.getElementById('targetSelection').classList.add('hidden');
+                
+                // Hide all special panels
+                document.getElementById('politicianPanel').classList.add('hidden');
+                document.getElementById('policeCardSelectionPanel').classList.add('hidden');
+                document.getElementById('policeDecisionPanel').classList.add('hidden');
+                document.getElementById('terroristCardSelectionPanel').classList.add('hidden');
+                document.getElementById('colonelRoleGuessPanel').classList.add('hidden');
+                document.getElementById('cardLossSelectionPanel').classList.add('hidden');
+                document.getElementById('challengeOpportunityPanel').classList.add('hidden');
+                document.getElementById('counterOpportunityPanel').classList.add('hidden');
+                document.getElementById('fiscClaimPanel').classList.add('hidden');
+                document.getElementById('fiscBlockPanel').classList.add('hidden');
+                document.getElementById('corruptionModal').classList.add('hidden');
+                
+                selectedTarget = null;
+                pendingAction = null;
+            }
+        });
+    </script>
+</body>
+</html>

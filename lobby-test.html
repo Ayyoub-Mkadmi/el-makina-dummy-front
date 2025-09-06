@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Makina - Lobby System</title>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .lobby-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .lobby-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            transition: transform 0.2s;
+        }
+        
+        .lobby-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .lobby-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .lobby-code {
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .player-list {
+            margin: 10px 0;
+        }
+        
+        .player {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .player:last-child {
+            border-bottom: none;
+        }
+        
+        .ready-status {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .ready {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .not-ready {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .creator-badge {
+            background: #ffc107;
+            color: #212529;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .current-lobby {
+            border: 2px solid #28a745;
+            background-color: #f8fff9;
+        }
+        
+        .status {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: border-color 0.2s;
+        }
+        
+        .avatar:hover {
+            border-color: #007bff;
+        }
+        
+        .avatar-selector {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .avatar-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid #ddd;
+            transition: border-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f9f9;
+        }
+        
+        .avatar-option:hover {
+            border-color: #007bff;
+            transform: scale(1.1);
+        }
+        
+        .avatar-option.selected {
+            border-color: #28a745;
+            border-width: 4px;
+        }
+        
+        .player {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .row input, .row button {
+            flex: 1;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden SVG Avatar Definitions -->
+    <div style="display: none;">
+        <!-- Avatar 1 - Elegant Blue Professional -->
+        <svg id="avatar-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow1">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad1)" filter="url(#shadow1)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#FFE4B5"/>
+            <circle cx="45" cy="35" r="2" fill="#333"/>
+            <circle cx="55" cy="35" r="2" fill="#333"/>
+            <path d="M 48 42 Q 50 44 52 42" stroke="#333" stroke-width="1.5" fill="none"/>
+            <!-- Hair -->
+            <path d="M 34 30 Q 50 20 66 30 Q 60 25 50 25 Q 40 25 34 30" fill="#4A4A4A"/>
+            <!-- Body -->
+            <rect x="42" y="54" width="16" height="25" rx="8" fill="#1F2937"/>
+            <rect x="44" y="56" width="12" height="20" rx="6" fill="#FFFFFF"/>
+            <!-- Tie -->
+            <polygon points="49,56 51,56 52,66 48,66" fill="#DC2626"/>
+        </svg>
+
+        <!-- Avatar 2 - Stylish Green Character -->
+        <svg id="avatar-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow2">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad2)" filter="url(#shadow2)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#FBBF24"/>
+            <circle cx="45" cy="35" r="2" fill="#333"/>
+            <circle cx="55" cy="35" r="2" fill="#333"/>
+            <path d="M 47 42 Q 50 45 53 42" stroke="#333" stroke-width="1.5" fill="none"/>
+            <!-- Hair with hat -->
+            <ellipse cx="50" cy="25" rx="18" ry="8" fill="#7C2D12"/>
+            <rect x="32" y="22" width="36" height="6" rx="3" fill="#92400E"/>
+            <!-- Body -->
+            <rect x="42" y="54" width="16" height="25" rx="8" fill="#059669"/>
+            <circle cx="46" cy="62" r="2" fill="#FFFFFF"/>
+            <circle cx="54" cy="62" r="2" fill="#FFFFFF"/>
+            <circle cx="50" cy="70" r="2" fill="#FFFFFF"/>
+        </svg>
+
+        <!-- Avatar 3 - Fierce Red Warrior -->
+        <svg id="avatar-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow3">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad3)" filter="url(#shadow3)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#F4A261"/>
+            <path d="M 44 33 L 47 36 L 44 39" stroke="#333" stroke-width="2" fill="none"/>
+            <path d="M 56 33 L 53 36 L 56 39" stroke="#333" stroke-width="2" fill="none"/>
+            <path d="M 45 42 Q 50 40 55 42" stroke="#333" stroke-width="2" fill="none"/>
+            <!-- Scar -->
+            <path d="M 40 32 L 45 38" stroke="#A0522D" stroke-width="1" fill="none"/>
+            <!-- Hair -->
+            <path d="M 30 28 Q 35 15 50 18 Q 65 15 70 28 Q 65 20 50 22 Q 35 20 30 28" fill="#8B4513"/>
+            <!-- Body - Armor -->
+            <rect x="40" y="54" width="20" height="25" rx="10" fill="#7F1D1D"/>
+            <rect x="42" y="56" width="16" height="20" rx="8" fill="#991B1B"/>
+            <circle cx="50" cy="66" r="3" fill="#FBBF24"/>
+        </svg>
+
+        <!-- Avatar 4 - Mystical Purple Mage -->
+        <svg id="avatar-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow4">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad4)" filter="url(#shadow4)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#E5E7EB"/>
+            <circle cx="45" cy="35" r="2" fill="#7C3AED"/>
+            <circle cx="55" cy="35" r="2" fill="#7C3AED"/>
+            <path d="M 47 42 Q 50 44 53 42" stroke="#7C3AED" stroke-width="1.5" fill="none"/>
+            <!-- Mystical mark -->
+            <circle cx="50" cy="30" r="3" fill="#FBBF24" opacity="0.8"/>
+            <path d="M 50 27 L 50 33 M 47 30 L 53 30" stroke="#FBBF24" stroke-width="1"/>
+            <!-- Beard -->
+            <path d="M 42 48 Q 50 52 58 48 Q 55 50 50 51 Q 45 50 42 48" fill="#E5E7EB"/>
+            <!-- Robe -->
+            <path d="M 35 54 Q 50 52 65 54 L 62 79 Q 50 82 38 79 Z" fill="#581C87"/>
+            <path d="M 42 60 Q 50 58 58 60 L 56 75 Q 50 77 44 75 Z" fill="#7C3AED"/>
+            <!-- Stars -->
+            <text x="45" y="68" fill="#FBBF24" font-size="8">✦</text>
+            <text x="53" y="72" fill="#FBBF24" font-size="6">✦</text>
+        </svg>
+
+        <!-- Avatar 5 - Energetic Orange Explorer -->
+        <svg id="avatar-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#EA580C;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#F97316;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow5">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad5)" filter="url(#shadow5)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#FED7AA"/>
+            <circle cx="45" cy="35" r="2" fill="#333"/>
+            <circle cx="55" cy="35" r="2" fill="#333"/>
+            <path d="M 46 41 Q 50 45 54 41" stroke="#333" stroke-width="1.5" fill="none"/>
+            <!-- Freckles -->
+            <circle cx="43" cy="38" r="0.5" fill="#F97316"/>
+            <circle cx="57" cy="38" r="0.5" fill="#F97316"/>
+            <circle cx="48" cy="40" r="0.5" fill="#F97316"/>
+            <!-- Hair - Adventurous style -->
+            <path d="M 32 32 Q 40 18 50 20 Q 60 18 68 32 Q 62 22 50 24 Q 38 22 32 32" fill="#DC2626"/>
+            <path d="M 45 20 Q 50 15 55 20" fill="#DC2626"/>
+            <!-- Explorer outfit -->
+            <rect x="42" y="54" width="16" height="25" rx="8" fill="#92400E"/>
+            <rect x="44" y="56" width="12" height="20" rx="6" fill="#D97706"/>
+            <!-- Pockets -->
+            <rect x="46" y="62" width="3" height="4" rx="1" fill="#92400E"/>
+            <rect x="51" y="62" width="3" height="4" rx="1" fill="#92400E"/>
+            <!-- Badge -->
+            <circle cx="50" cy="70" r="2" fill="#FBBF24"/>
+        </svg>
+
+        <!-- Avatar 6 - Elegant Pink Royal -->
+        <svg id="avatar-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#F472B6;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow6">
+                    <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#grad6)" filter="url(#shadow6)"/>
+            <circle cx="50" cy="50" r="47" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+            <!-- Face -->
+            <circle cx="50" cy="38" r="16" fill="#FECACA"/>
+            <circle cx="45" cy="35" r="2" fill="#333"/>
+            <circle cx="55" cy="35" r="2" fill="#333"/>
+            <!-- Eyelashes -->
+            <path d="M 42 32 L 44 31 M 43 33 L 45 32" stroke="#333" stroke-width="0.5"/>
+            <path d="M 58 32 L 56 31 M 57 33 L 55 32" stroke="#333" stroke-width="0.5"/>
+            <path d="M 47 42 Q 50 44 53 42" stroke="#EC4899" stroke-width="1.5" fill="none"/>
+            <!-- Crown -->
+            <path d="M 40 22 L 42 18 L 45 20 L 50 15 L 55 20 L 58 18 L 60 22 L 58 25 L 42 25 Z" fill="#FBBF24"/>
+            <circle cx="45" cy="20" r="1" fill="#DC2626"/>
+            <circle cx="50" cy="17" r="1.5" fill="#DC2626"/>
+            <circle cx="55" cy="20" r="1" fill="#DC2626"/>
+            <!-- Hair -->
+            <path d="M 42 25 Q 35 35 40 45 Q 45 40 50 42 Q 55 40 60 45 Q 65 35 58 25" fill="#8B5A3C"/>
+            <!-- Royal dress -->
+            <path d="M 35 54 Q 50 52 65 54 L 68 79 Q 50 85 32 79 Z" fill="#BE185D"/>
+            <path d="M 42 60 L 58 60 L 60 75 Q 50 78 40 75 Z" fill="#EC4899"/>
+            <!-- Jewels -->
+            <circle cx="46" cy="68" r="1" fill="#FBBF24"/>
+            <circle cx="50" cy="70" r="1" fill="#FBBF24"/>
+            <circle cx="54" cy="68" r="1" fill="#FBBF24"/>
+        </svg>
+        
+        <!-- COMPONENT-BASED AVATAR SYSTEM -->
+        <!-- FACE COMPONENTS (1-6) -->
+        <svg id="face-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#FDBCB4"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#D2B48C"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 54 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#8B4513"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#FFF" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#F5DEB3"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 52 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="46" cy="44" r="0.5" fill="#D2691E"/>
+            <circle cx="54" cy="44" r="0.5" fill="#D2691E"/>
+        </svg>
+
+        <svg id="face-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#C19A6B"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <svg id="face-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="45" r="18" fill="#FFDBAC"/>
+            <circle cx="44" cy="42" r="2" fill="#333"/>
+            <circle cx="56" cy="42" r="2" fill="#333"/>
+            <path d="M 47 50 Q 50 53 53 50" stroke="#333" stroke-width="1.5" fill="none"/>
+            <circle cx="41" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+            <circle cx="59" cy="45" r="1" fill="#FF6B6B" opacity="0.6"/>
+        </svg>
+
+        <!-- HAT COMPONENTS (1-6) -->
+        <svg id="hat-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="30" rx="20" ry="10" fill="#FF4444"/>
+            <rect x="30" y="25" width="40" height="8" rx="4" fill="#FF6666"/>
+            <ellipse cx="62" cy="30" rx="6" ry="2" fill="#FF6666"/>
+        </svg>
+
+        <svg id="hat-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 32 Q 30 22 50 22 Q 70 22 70 32 Q 68 26 50 26 Q 32 26 30 32" fill="#4A90E2"/>
+            <circle cx="50" cy="20" r="2" fill="#4A90E2"/>
+        </svg>
+
+        <svg id="hat-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="44" y="15" width="12" height="18" fill="#333"/>
+            <ellipse cx="50" cy="33" rx="18" ry="3" fill="#333"/>
+            <ellipse cx="50" cy="15" rx="6" ry="1.5" fill="#333"/>
+        </svg>
+
+        <svg id="hat-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 12 L 37 32 L 63 32 Z" fill="#7B68EE"/>
+            <ellipse cx="50" cy="32" rx="13" ry="2" fill="#7B68EE"/>
+            <circle cx="50" cy="14" r="1.5" fill="#FFD700"/>
+            <text x="46" y="24" fill="#FFD700" font-size="6">★</text>
+        </svg>
+
+        <svg id="hat-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 32 28 L 36 20 L 42 24 L 50 16 L 58 24 L 64 20 L 68 28 L 66 32 L 34 32 Z" fill="#FFD700"/>
+            <circle cx="42" cy="22" r="1" fill="#FF4444"/>
+            <circle cx="50" cy="18" r="1.5" fill="#FF4444"/>
+            <circle cx="58" cy="22" r="1" fill="#FF4444"/>
+        </svg>
+
+        <svg id="hat-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="30" rx="16" ry="6" fill="#8B4513"/>
+            <ellipse cx="50" cy="32" rx="22" ry="4" fill="#8B4513"/>
+            <path d="M 28 32 Q 24 30 28 28 Q 32 30 28 32" fill="#8B4513"/>
+            <path d="M 72 32 Q 76 30 72 28 Q 68 30 72 32" fill="#8B4513"/>
+        </svg>
+
+        <!-- ACCESSORY COMPONENTS (1-6) -->
+        <svg id="accessory-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="43" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <circle cx="57" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <line x1="48" y1="42" x2="52" y2="42" stroke="#333" stroke-width="1.5"/>
+        </svg>
+
+        <svg id="accessory-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 43 48 Q 46 47 50 48 Q 54 47 57 48 Q 54 50 50 48 Q 46 50 43 48" fill="#8B4513"/>
+        </svg>
+
+        <svg id="accessory-3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="69" cy="45" r="1.5" fill="#FFD700"/>
+            <circle cx="69" cy="48" r="0.8" fill="#FFD700"/>
+        </svg>
+
+        <svg id="accessory-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 38 38 L 42 46" stroke="#8B0000" stroke-width="1.2" fill="none"/>
+            <path d="M 39 40 L 41 44" stroke="#8B0000" stroke-width="0.8" fill="none"/>
+        </svg>
+
+        <svg id="accessory-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="43" cy="42" r="5" fill="none" stroke="#333" stroke-width="1.5"/>
+            <line x1="38" y1="42" x2="33" y2="44" stroke="#333" stroke-width="1"/>
+        </svg>
+
+        <svg id="accessory-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="55" cy="48" r="0.8" fill="#333"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <h1>🎮 El Makina - Lobby System</h1>
+        
+        <!-- Status Messages -->
+        <div id="status" class="status hidden"></div>
+        
+        <!-- Current Player Info -->
+        <div class="section">
+            <h3>👤 Player Info</h3>
+            <div class="form-group">
+                <label for="playerName">Your Name:</label>
+                <input type="text" id="playerName" placeholder="Enter your name" />
+            </div>
+            <div id="currentPlayerInfo" class="hidden">
+                <p><strong>Player ID:</strong> <span id="currentPlayerId"></span></p>
+                <p><strong>Current Lobby:</strong> <span id="currentLobbyName"></span></p>
+            </div>
+        </div>
+        
+        <!-- Lobby Stats -->
+        <div class="section">
+            <h3>📊 Lobby Statistics</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalLobbies">0</span>
+                    <div class="stat-label">Total Lobbies</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="publicLobbies">0</span>
+                    <div class="stat-label">Public Lobbies</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="activeGames">0</span>
+                    <div class="stat-label">Active Games</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="totalPlayers">0</span>
+                    <div class="stat-label">Total Players</div>
+                </div>
+            </div>
+            <button onclick="loadStats()">🔄 Refresh Stats</button>
+        </div>
+        
+        <!-- Create Lobby -->
+        <div class="section">
+            <h3>➕ Create New Lobby</h3>
+            <div class="form-group">
+                <label for="lobbyName">Lobby Name:</label>
+                <input type="text" id="lobbyName" placeholder="Enter lobby name" />
+            </div>
+            <div class="form-group">
+                <label for="maxPlayers">Max Players:</label>
+                <select id="maxPlayers">
+                    <option value="2">2 Players</option>
+                    <option value="3">3 Players</option>
+                    <option value="4">4 Players</option>
+                    <option value="5">5 Players</option>
+                    <option value="6" selected>6 Players</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="isPublic" checked> Make lobby public
+                </label>
+            </div>
+            <button onclick="createLobby()">🚀 Create Lobby</button>
+        </div>
+        
+        <!-- Join Lobby -->
+        <div class="section">
+            <h3>🚪 Join Lobby</h3>
+            <div class="row">
+                <input type="text" id="joinCode" placeholder="Enter 6-character join code" maxlength="6" />
+                <button onclick="joinLobbyByCode()">Join by Code</button>
+            </div>
+        </div>
+        
+        <!-- Current Lobby Controls -->
+        <div id="lobbyControls" class="section hidden">
+            <h3>🎯 Lobby Controls</h3>
+            <div class="row">
+                <button onclick="toggleReady()" id="readyButton">✅ Ready</button>
+                <button onclick="leaveLobby()" class="btn-danger">🚪 Leave Lobby</button>
+                <button onclick="startGame()" id="startGameButton" class="btn-success hidden">🎮 Start Game</button>
+            </div>
+        </div>
+        
+        <!-- Public Lobbies -->
+        <div class="section">
+            <h3>🌐 Public Lobbies</h3>
+            <button onclick="loadPublicLobbies()">🔄 Refresh Lobbies</button>
+            <div id="publicLobbies" class="lobby-list"></div>
+        </div>
+        
+        <!-- Debug Console -->
+        <div class="section">
+            <h3>🐛 Debug Console</h3>
+            <div id="debugConsole" style="background: #000; color: #0f0; padding: 15px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; border-radius: 5px;"></div>
+            <button onclick="clearDebugConsole()">Clear Console</button>
+        </div>
+        
+        <!-- Current Lobby Details -->
+        <div id="currentLobbySection" class="section hidden">
+            <h3>🏠 Current Lobby</h3>
+            <div id="currentLobbyDetails"></div>
+        </div>
+    </div>
+
+    <!-- Avatar Selector Modal -->
+    <div id="avatarSelector" class="avatar-selector">
+        <div class="avatar-modal">
+            <h3>🎨 Customize Your Avatar</h3>
+            
+            <!-- Avatar Preview -->
+            <div style="text-align: center; margin: 20px 0;">
+                <h4>Preview:</h4>
+                <div id="avatarPreview" style="display: inline-block; width: 80px; height: 80px; border: 3px solid #007bff; border-radius: 50%; overflow: hidden;">
+                    <!-- Preview will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Component Selectors -->
+            <div style="margin: 20px 0;">
+                <h4 id="faceTitle">👤 Face (1/6):</h4>
+                <div class="avatar-grid" id="faceGrid">
+                    <!-- Face options will be populated here -->
+                </div>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h4 id="hatTitle">🎩 Hat (1/6):</h4>
+                <div class="avatar-grid" id="hatGrid">
+                    <!-- Hat options will be populated here -->
+                </div>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h4 id="accessoryTitle">👓 Accessory (1/6):</h4>
+                <div class="avatar-grid" id="accessoryGrid">
+                    <!-- Accessory options will be populated here -->
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="closeAvatarSelector()" class="btn-secondary">Cancel</button>
+                <button onclick="confirmAvatarSelection()" class="btn-success">Confirm Avatar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Backend URL configuration - Railway deployment
+        const API_BASE = 'https://el-makina-backend-production.up.railway.app/api';
+        const WEBSOCKET_URL = 'https://el-makina-backend-production.up.railway.app';
+        
+        console.log('🔗 Backend Configuration:', {
+            api: API_BASE,
+            websocket: WEBSOCKET_URL
+        });
+
+        
+        let socket = null;
+        let currentPlayerId = null;
+        let currentLobby = null;
+        let isReady = false;
+        let selectedAvatarIndices = [1, 1, 1]; // Default avatar indices [face, hat, accessory]
+        
+        // Avatar configuration
+        const AVATAR_COUNT = 6; // Number of available avatars for each component
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadPublicLobbies();
+            setupWebSocket();
+            populateAvatarGrid();
+        });
+        
+        // WebSocket Setup
+        function setupWebSocket() {
+            socket = io(`${WEBSOCKET_URL}/lobby`);
+            
+            socket.on('connect', () => {
+                console.log('Connected to lobby server');
+                showStatus('Connected to lobby server', 'success');
+            });
+            
+            socket.on('lobby-joined', (data) => {
+                debugLog(`WebSocket: lobby-joined - ${JSON.stringify(data)}`);
+                if (data.success) {
+                    currentPlayerId = data.playerId;
+                    currentLobby = data.lobby;
+                    updateCurrentPlayerInfo();
+                    updateCurrentLobby();
+                    showStatus('Successfully joined lobby!', 'success');
+                    loadPublicLobbies(); // Refresh to show updated lobby
+                }
+            });
+            
+            socket.on('lobby-connected', (data) => {
+                debugLog(`WebSocket: lobby-connected - ${JSON.stringify(data)}`);
+                if (data.success) {
+                    console.log('Connected to existing lobby via WebSocket');
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                }
+            });
+            
+            socket.on('lobby-left', (data) => {
+                currentPlayerId = null;
+                currentLobby = null;
+                isReady = false;
+                updateCurrentPlayerInfo();
+                updateCurrentLobby();
+                showStatus('Left lobby successfully', 'info');
+                loadPublicLobbies(); // Refresh lobbies
+            });
+            
+            socket.on('player-joined', (data) => {
+                debugLog(`WebSocket: player-joined - Player: ${data.playerName}, Current Player: ${currentPlayerId}`);
+                console.log('Player joined event received:', data);
+                if (currentLobby && currentLobby.id === data.lobby.id) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                    if (data.playerId !== currentPlayerId) {
+                        showStatus(`${data.playerName} joined the lobby`, 'info');
+                    }
+                }
+                loadPublicLobbies(); // Refresh to show updated lobby
+            });
+            
+            socket.on('player-connected', (data) => {
+                console.log('Player connected event received:', data);
+                if (currentLobby && currentLobby.id === data.lobby.id) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                    showStatus(`${data.playerName} connected to the lobby`, 'info');
+                }
+            });
+            
+            socket.on('player-left', (data) => {
+                console.log('Player left event received:', data);
+                if (currentLobby) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                    showStatus('A player left the lobby', 'info');
+                }
+                loadPublicLobbies(); // Refresh lobbies
+            });
+            
+            socket.on('player-ready-updated', (data) => {
+                console.log('Player ready updated event received:', data);
+                if (currentLobby && currentLobby.id === data.lobby.id) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                    const player = currentLobby.players.find(p => p.id === data.playerId);
+                    if (player && data.playerId !== currentPlayerId) {
+                        showStatus(`${player.name} is ${data.isReady ? 'ready' : 'not ready'}`, 'info');
+                    }
+                }
+            });
+            
+            socket.on('lobby-updated', (data) => {
+                if (currentLobby && currentLobby.id === data.lobby.id) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                }
+                loadPublicLobbies(); // Refresh public lobbies
+            });
+            
+            socket.on('game-starting', (data) => {
+                debugLog(`WebSocket: game-starting - ${JSON.stringify(data)}`);
+                showStatus(`Game is starting! Game ID: ${data.gameId}`, 'success');
+                
+                // Find the current player's game ID
+                const lobbyPlayer = data.lobby.players.find(p => p.id === currentPlayerId);
+                const gamePlayerId = data.playerMapping[currentPlayerId];
+                
+                if (lobbyPlayer && gamePlayerId) {
+                    debugLog(`Redirecting to game: gameId=${data.gameId}, playerId=${gamePlayerId}, playerName=${lobbyPlayer.name}`);
+                    
+                    // Redirect to the game with proper parameters
+                    const gameUrl = `game.html?gameId=${data.gameId}&playerId=${gamePlayerId}&playerName=${encodeURIComponent(lobbyPlayer.name)}`;
+                    window.location.href = gameUrl;
+                } else {
+                    console.error('Could not find player mapping for game redirect');
+                    showStatus('Error: Could not join game', 'error');
+                }
+                
+                // Clear current lobby
+                currentLobby = null;
+                currentPlayerId = null;
+                updateCurrentPlayerInfo();
+                updateCurrentLobby();
+            });
+            
+            socket.on('avatar-updated', (data) => {
+                debugLog(`WebSocket: avatar-updated - Player: ${data.playerId}, Avatar: [${data.avatarIndices.join(', ')}]`);
+                if (currentLobby && currentLobby.id === data.lobby.id) {
+                    currentLobby = data.lobby;
+                    updateCurrentLobby();
+                    const player = currentLobby.players.find(p => p.id === data.playerId);
+                    if (player) {
+                        showStatus(`${player.name} changed their avatar to [${data.avatarIndices.join(', ')}]`, 'info');
+                    }
+                }
+            });
+            
+            socket.on('avatar-error', (data) => {
+                showStatus(`Avatar Error: ${data.message}`, 'error');
+            });
+            
+            socket.on('lobby-error', (data) => {
+                showStatus(`Error: ${data.message}`, 'error');
+            });
+            
+            socket.on('disconnect', () => {
+                console.log('Disconnected from lobby server');
+                showStatus('Disconnected from lobby server', 'error');
+            });
+        }
+        
+        // API Functions
+        async function createLobby() {
+            const playerName = document.getElementById('playerName').value.trim();
+            const lobbyName = document.getElementById('lobbyName').value.trim();
+            const maxPlayers = parseInt(document.getElementById('maxPlayers').value);
+            const isPublic = document.getElementById('isPublic').checked;
+            
+            if (!playerName || !lobbyName) {
+                showStatus('Please enter both your name and lobby name', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/lobbies`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerName,
+                        lobbyName,
+                        maxPlayers,
+                        isPublic
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentPlayerId = data.data.playerId;
+                    currentLobby = data.data.lobby;
+                    isReady = true; // Creator is always ready
+                    
+                    console.log('Created lobby, now connecting via WebSocket...');
+                    
+                    // Connect to the lobby via WebSocket
+                    socket.emit('connect-to-lobby', {
+                        lobbyId: currentLobby.id,
+                        playerId: currentPlayerId
+                    });
+                    
+                    updateCurrentPlayerInfo();
+                    updateCurrentLobby();
+                    loadPublicLobbies();
+                    loadStats();
+                    showStatus(`Lobby created! Join code: ${currentLobby.code}`, 'success');
+                } else {
+                    showStatus(`Failed to create lobby: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Error creating lobby: ${error.message}`, 'error');
+            }
+        }
+        
+        async function joinLobbyByCode() {
+            const playerName = document.getElementById('playerName').value.trim();
+            const joinCode = document.getElementById('joinCode').value.trim().toUpperCase();
+            
+            if (!playerName || !joinCode) {
+                showStatus('Please enter both your name and join code', 'error');
+                return;
+            }
+            
+            socket.emit('join-lobby', {
+                joinCode: joinCode,
+                playerName: playerName
+            });
+        }
+        
+        async function joinLobbyById(lobbyId) {
+            const playerName = document.getElementById('playerName').value.trim();
+            
+            if (!playerName) {
+                showStatus('Please enter your name first', 'error');
+                return;
+            }
+            
+            socket.emit('join-lobby', {
+                lobbyId: lobbyId,
+                playerName: playerName
+            });
+        }
+        
+        function leaveLobby() {
+            if (currentPlayerId) {
+                socket.emit('leave-lobby', {
+                    playerId: currentPlayerId
+                });
+            }
+        }
+        
+        function toggleReady() {
+            if (!currentPlayerId) return;
+            
+            isReady = !isReady;
+            
+            socket.emit('update-ready', {
+                playerId: currentPlayerId,
+                isReady: isReady
+            });
+        }
+        
+        function startGame() {
+            if (!currentPlayerId || !currentLobby || !currentLobby.canStartGame) return;
+            
+            socket.emit('start-game', {
+                creatorId: currentPlayerId
+            });
+        }
+        
+        async function loadPublicLobbies() {
+            try {
+                const response = await fetch(`${API_BASE}/lobbies/public`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayPublicLobbies(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading public lobbies:', error);
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/lobbies/stats/overview`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.data;
+                    document.getElementById('totalLobbies').textContent = stats.totalLobbies;
+                    document.getElementById('publicLobbies').textContent = stats.publicLobbies;
+                    document.getElementById('activeGames').textContent = stats.activeGames;
+                    document.getElementById('totalPlayers').textContent = stats.totalPlayers;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        // UI Functions
+        function displayPublicLobbies(lobbies) {
+            const container = document.getElementById('publicLobbies');
+            
+            if (lobbies.length === 0) {
+                container.innerHTML = '<p>No public lobbies available. Create one!</p>';
+                return;
+            }
+            
+            container.innerHTML = lobbies.map(lobby => `
+                <div class="lobby-card ${lobby.id === currentLobby?.id ? 'current-lobby' : ''}">
+                    <div class="lobby-header">
+                        <h4>${lobby.name}</h4>
+                        <span class="lobby-code">${lobby.code}</span>
+                    </div>
+                    <div class="player-list">
+                        ${lobby.players.map(player => `
+                            <div class="player">
+                                <span>
+                                    ${player.name}
+                                    ${player.id === lobby.creatorId ? '<span class="creator-badge">Creator</span>' : ''}
+                                </span>
+                                <span class="ready-status ${player.isReady ? 'ready' : 'not-ready'}">
+                                    ${player.isReady ? 'Ready' : 'Not Ready'}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p><strong>Players:</strong> ${lobby.playersCount}/${lobby.maxPlayers}</p>
+                    ${lobby.id !== currentLobby?.id ? 
+                        `<button onclick="joinLobbyById('${lobby.id}')" ${lobby.isFull ? 'disabled' : ''}>
+                            ${lobby.isFull ? 'Full' : 'Join Lobby'}
+                        </button>` : 
+                        '<p style="text-align: center; color: #28a745; font-weight: bold;">You are in this lobby</p>'
+                    }
+                </div>
+            `).join('');
+        }
+        
+        function updateCurrentPlayerInfo() {
+            const infoDiv = document.getElementById('currentPlayerInfo');
+            const playerIdSpan = document.getElementById('currentPlayerId');
+            const lobbyNameSpan = document.getElementById('currentLobbyName');
+            
+            if (currentPlayerId && currentLobby) {
+                playerIdSpan.textContent = currentPlayerId;
+                lobbyNameSpan.textContent = currentLobby.name;
+                infoDiv.classList.remove('hidden');
+            } else {
+                infoDiv.classList.add('hidden');
+            }
+        }
+        
+        function updateCurrentLobby() {
+            const lobbySection = document.getElementById('currentLobbySection');
+            const lobbyDetails = document.getElementById('currentLobbyDetails');
+            const lobbyControls = document.getElementById('lobbyControls');
+            const readyButton = document.getElementById('readyButton');
+            const startGameButton = document.getElementById('startGameButton');
+            
+            if (currentLobby) {
+                const currentPlayer = currentLobby.players.find(p => p.id === currentPlayerId);
+                isReady = currentPlayer?.isReady || false;
+                
+                lobbyDetails.innerHTML = `
+                    <div class="lobby-card current-lobby">
+                        <div class="lobby-header">
+                            <h4>${currentLobby.name}</h4>
+                            <span class="lobby-code">${currentLobby.code}</span>
+                        </div>
+                        <div class="player-list">
+                            ${currentLobby.players.map(player => {
+                                // Use new component-based avatar system
+                                const avatarIndices = player.avatarIndices || [1, 1, 1];
+                                const avatarUrl = getAvatarUrlFromIndices(avatarIndices);
+                                return `
+                                <div class="player">
+                                    <div class="player-info">
+                                        <img src="${avatarUrl}" 
+                                             class="avatar" 
+                                             onclick="${player.id === currentPlayerId ? 'openAvatarSelector()' : ''}"
+                                             title="${player.id === currentPlayerId ? 'Click to change avatar' : 'Player avatar'}"
+                                             alt="Avatar" />
+                                        <span>
+                                            ${player.name}
+                                            ${player.id === currentLobby.creatorId ? '<span class="creator-badge">Creator</span>' : ''}
+                                            ${player.id === currentPlayerId ? ' (You)' : ''}
+                                        </span>
+                                    </div>
+                                    <span class="ready-status ${player.isReady ? 'ready' : 'not-ready'}">
+                                        ${player.isReady ? 'Ready' : 'Not Ready'}
+                                    </span>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        <p><strong>Players:</strong> ${currentLobby.playersCount}/${currentLobby.maxPlayers}</p>
+                        <p><strong>Can Start Game:</strong> ${currentLobby.canStartGame ? 'Yes' : 'No'}</p>
+                    </div>
+                `;
+                
+                // Update ready button
+                readyButton.textContent = isReady ? '❌ Not Ready' : '✅ Ready';
+                readyButton.className = isReady ? 'btn-secondary' : '';
+                
+                // Show/hide start game button
+                if (currentLobby.creatorId === currentPlayerId && currentLobby.canStartGame) {
+                    startGameButton.classList.remove('hidden');
+                } else {
+                    startGameButton.classList.add('hidden');
+                }
+                
+                lobbySection.classList.remove('hidden');
+                lobbyControls.classList.remove('hidden');
+                
+                // Refresh public lobbies to update current lobby status
+                loadPublicLobbies();
+            } else {
+                lobbySection.classList.add('hidden');
+                lobbyControls.classList.add('hidden');
+            }
+        }
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.classList.remove('hidden');
+            
+            // Also log to debug console
+            debugLog(`[${type.toUpperCase()}] ${message}`);
+            
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function debugLog(message) {
+            const debugConsole = document.getElementById('debugConsole');
+            const timestamp = new Date().toLocaleTimeString();
+            debugConsole.innerHTML += `[${timestamp}] ${message}\n`;
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearDebugConsole() {
+            document.getElementById('debugConsole').innerHTML = '';
+        }
+        
+        // Avatar Functions
+        function populateAvatarGrid() {
+            populateComponentGrids();
+            updateAvatarPreview();
+            updateComponentTitles();
+        }
+        
+        function populateComponentGrids() {
+            // Populate Face Grid
+            const faceGrid = document.getElementById('faceGrid');
+            faceGrid.innerHTML = '';
+            for (let i = 1; i <= 6; i++) {
+                const faceDiv = createComponentOption('face', i, 0);
+                faceGrid.appendChild(faceDiv);
+            }
+            
+            // Populate Hat Grid
+            const hatGrid = document.getElementById('hatGrid');
+            hatGrid.innerHTML = '';
+            for (let i = 1; i <= 6; i++) {
+                const hatDiv = createComponentOption('hat', i, 1);
+                hatGrid.appendChild(hatDiv);
+            }
+            
+            // Populate Accessory Grid
+            const accessoryGrid = document.getElementById('accessoryGrid');
+            accessoryGrid.innerHTML = '';
+            for (let i = 1; i <= 6; i++) {
+                const accessoryDiv = createComponentOption('accessory', i, 2);
+                accessoryGrid.appendChild(accessoryDiv);
+            }
+        }
+        
+        function createComponentOption(componentType, index, componentIndex) {
+            const componentDiv = document.createElement('div');
+            componentDiv.className = 'avatar-option';
+            componentDiv.dataset.type = componentType;
+            componentDiv.dataset.index = index;
+            componentDiv.onclick = () => selectComponent(componentType, index, componentIndex);
+            
+            // Get the component SVG
+            const sourceComponent = document.getElementById(`${componentType}-${index}`);
+            if (sourceComponent) {
+                const clonedSvg = sourceComponent.cloneNode(true);
+                clonedSvg.removeAttribute('id');
+                clonedSvg.setAttribute('width', '50');
+                clonedSvg.setAttribute('height', '50');
+                componentDiv.appendChild(clonedSvg);
+            }
+            
+            // Check if this is the currently selected component
+            if (index === selectedAvatarIndices[componentIndex]) {
+                componentDiv.classList.add('selected');
+            }
+            
+            return componentDiv;
+        }
+        
+        function selectComponent(componentType, index, componentIndex) {
+            // Update visual selection for this component type
+            document.querySelectorAll(`[data-type="${componentType}"]`).forEach(div => {
+                div.classList.remove('selected');
+            });
+            document.querySelector(`[data-type="${componentType}"][data-index="${index}"]`).classList.add('selected');
+            
+            // Update selected avatar indices
+            selectedAvatarIndices[componentIndex] = index;
+            
+            // Update the preview
+            updateAvatarPreview();
+            
+            // Update the titles to show current selection
+            updateComponentTitles();
+        }
+        
+        function updateComponentTitles() {
+            // Update individual title elements instead of replacing entire HTML
+            const faceTitle = document.getElementById('faceTitle');
+            const hatTitle = document.getElementById('hatTitle');
+            const accessoryTitle = document.getElementById('accessoryTitle');
+            
+            if (faceTitle) {
+                faceTitle.textContent = `👤 Face (${selectedAvatarIndices[0]}/6):`;
+            }
+            if (hatTitle) {
+                hatTitle.textContent = `🎩 Hat (${selectedAvatarIndices[1]}/6):`;
+            }
+            if (accessoryTitle) {
+                accessoryTitle.textContent = `👓 Accessory (${selectedAvatarIndices[2]}/6):`;
+            }
+        }
+        
+        function updateAvatarPreview() {
+            const previewDiv = document.getElementById('avatarPreview');
+            if (!previewDiv) return;
+            
+            const avatarUrl = getAvatarUrlFromIndices(selectedAvatarIndices);
+            previewDiv.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="Avatar Preview">`;
+        }
+        
+        function selectAvatar(faceIndex) {
+            // Legacy function - redirect to component selection
+            selectComponent('face', faceIndex, 0);
+        }
+        
+        function openAvatarSelector() {
+            if (!currentLobby || !currentPlayerId) {
+                showStatus('You must be in a lobby to change your avatar', 'error');
+                return;
+            }
+            
+            // Set the selected avatar to the current player's avatar
+            const currentPlayer = currentLobby.players.find(p => p.id === currentPlayerId);
+            if (currentPlayer && currentPlayer.avatarIndices) {
+                selectedAvatarIndices = [...currentPlayer.avatarIndices]; // Copy the array
+            } else {
+                selectedAvatarIndices = [1, 1, 1]; // Default
+            }
+            
+            // Populate grids and update titles
+            populateAvatarGrid();
+            updateComponentTitles();
+            
+            // Show the modal
+            document.getElementById('avatarSelector').style.display = 'block';
+        }
+        
+        function closeAvatarSelector() {
+            document.getElementById('avatarSelector').style.display = 'none';
+        }
+        
+        function confirmAvatarSelection() {
+            if (!currentPlayerId || !selectedAvatarIndices || selectedAvatarIndices.length !== 3) {
+                showStatus('Please select an avatar', 'error');
+                return;
+            }
+            
+            socket.emit('update-avatar', {
+                playerId: currentPlayerId,
+                avatarIndices: selectedAvatarIndices
+            });
+            
+            closeAvatarSelector();
+        }
+        
+        function getAvatarUrl(index) {
+            const svgElement = document.getElementById(`avatar-${index}`);
+            if (!svgElement) {
+                console.warn(`Avatar SVG not found for index: ${index}`);
+                return '';
+            }
+            
+            // Get the SVG as a string
+            const svgString = new XMLSerializer().serializeToString(svgElement);
+            // Convert to data URL
+            const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+            return dataUrl;
+        }
+        
+        function getAvatarUrlFromIndices(avatarIndices) {
+            // Generate a composite avatar from face, hat, and accessory indices
+            if (!avatarIndices || avatarIndices.length !== 3) {
+                return getAvatarUrl(1); // Fallback to default
+            }
+
+            const [faceIndex, hatIndex, accessoryIndex] = avatarIndices;
+            
+            // Create a composite SVG
+            const compositeSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            compositeSvg.setAttribute('viewBox', '0 0 100 100');
+            compositeSvg.setAttribute('width', '64');
+            compositeSvg.setAttribute('height', '64');
+            
+            // Add background circle with gradient
+            const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bgCircle.setAttribute('cx', '50');
+            bgCircle.setAttribute('cy', '50');
+            bgCircle.setAttribute('r', '47');
+            bgCircle.setAttribute('fill', getBackgroundColor(faceIndex));
+            compositeSvg.appendChild(bgCircle);
+            
+            // Add face
+            const faceElement = document.getElementById(`face-${Math.max(1, Math.min(6, faceIndex))}`);
+            if (faceElement) {
+                const faceClone = faceElement.cloneNode(true);
+                faceClone.removeAttribute('id');
+                const faceGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                faceGroup.innerHTML = faceClone.innerHTML;
+                compositeSvg.appendChild(faceGroup);
+            }
+            
+            // Add hat
+            const hatElement = document.getElementById(`hat-${Math.max(1, Math.min(6, hatIndex))}`);
+            if (hatElement) {
+                const hatClone = hatElement.cloneNode(true);
+                hatClone.removeAttribute('id');
+                const hatGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                hatGroup.innerHTML = hatClone.innerHTML;
+                compositeSvg.appendChild(hatGroup);
+            }
+            
+            // Add accessory
+            const accessoryElement = document.getElementById(`accessory-${Math.max(1, Math.min(6, accessoryIndex))}`);
+            if (accessoryElement) {
+                const accessoryClone = accessoryElement.cloneNode(true);
+                accessoryClone.removeAttribute('id');
+                const accessoryGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                accessoryGroup.innerHTML = accessoryClone.innerHTML;
+                compositeSvg.appendChild(accessoryGroup);
+            }
+            
+            // Convert to data URL
+            const svgString = new XMLSerializer().serializeToString(compositeSvg);
+            const encodedSvg = encodeURIComponent(svgString);
+            return `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+        }
+
+        function getBackgroundColor(faceIndex) {
+            const colors = [
+                '#4A90E2', // Blue
+                '#50C878', // Green  
+                '#FF6B6B', // Red
+                '#9B59B6', // Purple
+                '#F39C12', // Orange
+                '#E91E63'  // Pink
+            ];
+            return colors[(faceIndex - 1) % colors.length];
+        }
+        
+        // Auto-refresh lobbies every 10 seconds
+        setInterval(() => {
+            if (!currentLobby) {
+                loadPublicLobbies();
+            }
+            loadStats();
+        }, 10000);
+    </script>
+</body>
+</html>
